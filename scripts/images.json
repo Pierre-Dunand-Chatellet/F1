@@ -1,0 +1,58 @@
+{
+  "pionniers": {
+    "src": "img/pionniers.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Juan_Manuel_Fangio_and_Alfred_Neubauer_1955_Dutch_GP.jpg/1280px-Juan_Manuel_Fangio_and_Alfred_Neubauer_1955_Dutch_GP.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:Juan_Manuel_Fangio_and_Alfred_Neubauer_1955_Dutch_GP.jpg",
+    "licence": "CC0",
+    "credit": "Joop van Bilsen for Anefo",
+    "date": "1955-06-17"
+  },
+  "moteur-arriere": {
+    "src": "img/moteur-arriere.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/ba/Grote_Prijs_van_Zandvoort%2C_Jim_Clark_met_Lotus_in_actie%2C_Bestanddeelnr_917-9752.jpg/1280px-Grote_Prijs_van_Zandvoort%2C_Jim_Clark_met_Lotus_in_actie%2C_Bestanddeelnr_917-9752.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:Grote_Prijs_van_Zandvoort,_Jim_Clark_met_Lotus_in_actie,_Bestanddeelnr_917-9752.jpg",
+    "licence": "CC0",
+    "credit": "Eric Koch for Anefo",
+    "date": "1965-07-18"
+  },
+  "ailerons": {
+    "src": "img/ailerons.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/De_vrouwen_met_hun_prijs%2C_Bestanddeelnr_927-0319.jpg/1280px-De_vrouwen_met_hun_prijs%2C_Bestanddeelnr_927-0319.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:De_vrouwen_met_hun_prijs,_Bestanddeelnr_927-0319.jpg",
+    "licence": "CC0",
+    "credit": "Fotograaf Onbekend / Anefo",
+    "date": "1974-02-27"
+  },
+  "turbo": {
+    "src": "img/turbo.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Pinksterraces_op_circuit_van_Zandvoort_formule_3_%28meetellend_voor_EK%29_Larraur_%2C_Bestanddeelnr_932-1899.jpg/1280px-Pinksterraces_op_circuit_van_Zandvoort_formule_3_%28meetellend_voor_EK%29_Larraur_%2C_Bestanddeelnr_932-1899.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:Pinksterraces_op_circuit_van_Zandvoort_formule_3_(meetellend_voor_EK)_Larraur_,_Bestanddeelnr_932-1899.jpg",
+    "licence": "CC0",
+    "credit": "Marcel Antonisse / Anefo",
+    "date": "1982-05-31"
+  },
+  "electronique": {
+    "src": "img/electronique.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Porsche_Typ_804_F1_in_the_old_Porsche-Museum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "page": "https://commons.wikimedia.org/wiki/File:Porsche_Typ_804_F1_in_the_old_Porsche-Museum.jpg",
+    "licence": "Public domain",
+    "credit": "Bran",
+    "date": "2004-09"
+  },
+  "aero": {
+    "src": "img/aero.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Lotus_F1_Racing_Logo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotus_F1_Racing_Logo.jpg",
+    "licence": "Public domain",
+    "credit": "Mcemj",
+    "date": "2009-01-15"
+  },
+  "hybride": {
+    "src": "img/hybride.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Formula_1_2016_-i---i-_%2830349930930%29.jpg/1280px-Formula_1_2016_-i---i-_%2830349930930%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "page": "https://commons.wikimedia.org/wiki/File:Formula_1_2016_-i---i-_(30349930930).jpg",
+    "licence": "CC0",
+    "credit": "Gobierno CDMX",
+    "date": "2016-10-28 16:28"
+  }
+}

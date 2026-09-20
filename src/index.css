@@ -1,0 +1,178 @@
+@import 'tailwindcss';
+
+/* Auto-hebergees : aucune requete vers un service tiers pour l'affichage.
+   Les seules ressources externes du site sont les trois APIs de donnees. */
+@font-face {
+  font-family: 'Archivo';
+  src: url('/f1/fonts/archivo.woff2') format('woff2-variations');
+  font-weight: 400 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/f1/fonts/space-grotesk.woff2') format('woff2-variations');
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@theme {
+  --color-void: #0b0c10;
+  --color-ink: #f4f4f6;
+  --color-accent: #ff1801;
+
+  --color-carbon-900: #101218;
+  --color-carbon-800: #171922;
+  --color-carbon-700: #22252f;
+  --color-carbon-500: #454a58;
+  --color-carbon-300: #8a90a0;
+
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-tech: 'Space Grotesk', ui-monospace, monospace;
+}
+
+:root {
+  /* Les easings natifs manquent de nerf : ces courbes donnent le claquement. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --grid-line: rgb(244 244 246 / 0.06);
+  --gutter: clamp(1.25rem, 4vw, 5rem);
+
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-void);
+  /* Lenis pilote le defilement ; sans cette ligne les deux se battent. */
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  background: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-tech);
+  font-weight: 350;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Chiffres de meme chasse : un compte a rebours ne doit pas tressauter. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 112%;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+/* Surimpression technique : labels, unites, telemetrie en filigrane. */
+.tech {
+  font-family: var(--font-tech);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Reveal au scroll : l'IntersectionObserver pose data-in, la transition CSS
+   fait le reste. Hors main thread, donc insensible aux fetch en cours. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.5s var(--ease-out),
+    transform 0.5s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal='in'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Tout element pressable repond a l'appui. */
+.pressable {
+  transition: transform 0.16s var(--ease-out);
+}
+.pressable:active {
+  transform: scale(0.97);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Mouvement reduit, pas anime a zero : on garde l'opacite qui aide
+     a comprendre l'apparition, on supprime tout deplacement. */
+  [data-reveal] {
+    transform: none;
+    transition: opacity 0.2s ease;
+  }
+  .pressable:active {
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Masquage typographique : chaque ligne monte depuis sous son propre masque.
+   Animation de montage, jouee une fois — des keyframes CSS suffisent et
+   tournent hors main thread. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+}
+.line-mask > span {
+  display: block;
+  transform: translateY(102%);
+  animation: line-rise 0.9s var(--ease-out) forwards;
+  animation-delay: var(--line-delay, 0ms);
+}
+@keyframes line-rise {
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line-mask > span {
+    transform: none;
+    animation: none;
+  }
+}
+
+/* Survol reserve aux pointeurs fins : sur tactile, un appui declenche le hover
+   et laisse l'element coince dans son etat survole. */
+@media (hover: hover) and (pointer: fine) {
+  .hover-rise {
+    transition: transform 0.22s var(--ease-out);
+  }
+  .hover-rise:hover {
+    transform: translateY(-3px);
+  }
+}
+
+/* Hauteur de nav explicite : la barre est fixe, donc tout ce qui doit rester
+   visible sous elle (le bandeau de donnees hors ligne) a besoin de la connaitre. */
+:root {
+  --nav-h: 3.25rem;
+}
