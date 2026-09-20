@@ -13,6 +13,8 @@ import {
 } from './season.ts'
 // @ts-expect-error — script de build en JS, pas de declarations de types.
 import { simplify, toTrace } from '../../scripts/fetch-data.mjs'
+import { existsSync } from 'node:fs'
+import { ARCHIVE } from '../data/archive.ts'
 import { CIRCUIT_TRACES } from '../data/circuits.generated.ts'
 import { SEASON_SNAPSHOT } from '../data/season.snapshot.ts'
 import type { ConstructorStanding, DriverStanding, OpenF1Driver, Race } from './types.ts'
@@ -252,6 +254,18 @@ assert.deepEqual(splitDuration(90_061_000), { d: 1, h: 1, m: 1, s: 1 })
     const t = CIRCUIT_TRACES[r.Circuit.circuitId]
     if (t) assert.ok(t.path.length > 50, `${r.Circuit.circuitId} : trace vide`)
   }
+}
+
+// --- Photos d'archive ------------------------------------------------------
+
+for (const photo of ARCHIVE) {
+  // Chemin relatif obligatoire : il est resolu contre BASE_URL a l'affichage.
+  // Un chemin commencant par '/' court-circuiterait la base et casserait le
+  // jour ou le site changerait de sous-dossier.
+  assert.ok(!photo.src.startsWith('/'), `${photo.src} : chemin absolu interdit`)
+  assert.ok(existsSync(`public/${photo.src}`), `${photo.src} : fichier absent de public/`)
+  assert.ok(photo.alt.length > 30, `${photo.src} : texte alternatif trop court`)
+  assert.ok(photo.licence === 'CC0' || /public domain/i.test(photo.licence), `${photo.src} : licence non libre`)
 }
 
 console.log('check : tout passe')

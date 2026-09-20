@@ -4,6 +4,7 @@ import { Reveal, SectionHeader } from '../components/ui.tsx'
 import { ARCHIVE } from '../data/archive.ts'
 import { ERAS, type Era } from '../data/eras.ts'
 import { useReducedMotion } from '../lib/hooks.ts'
+import { href } from '../lib/routes.ts'
 
 /**
  * Frise horizontale pilotee par le scroll vertical. La section est haute ;
@@ -37,7 +38,9 @@ function ArchiveStrip() {
           <Reveal as="li" key={photo.src} delay={i * 80}>
             <figure>
               <img
-                src={photo.src}
+                // Resolu contre la base : un chemin relatif pointerait vers
+                // /f1/histoire/img/… puisque cette section a sa propre page.
+                src={href(photo.src)}
                 alt={photo.alt}
                 width={1280}
                 height={photo.src.includes('pionniers') ? 1000 : 844}
