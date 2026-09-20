@@ -111,6 +111,70 @@ export function useNow(active = true, everyMs = 1000): number {
   return now
 }
 
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+
+/**
+ * Enferme le focus dans un element modal, et le rend a son point de depart.
+ *
+ * Sans ca, une fiche ouverte laisse le focus sur la carte qui l'a declenchee :
+ * au clavier, la fiche est inatteignable et Tab promene l'utilisateur dans une
+ * page qu'il ne voit plus, derriere la surcouche.
+ *
+ * L'ecoute est posee sur le document, pas sur la boite : si le focus s'est
+ * deja echappe, un ecouteur local ne se declencherait jamais.
+ */
+export function useFocusTrap<T extends HTMLElement>(active: boolean) {
+  const ref = useRef<T>(null)
+
+  useEffect(() => {
+    if (!active) return
+    const box = ref.current
+    if (!box) return
+
+    const previous = document.activeElement as HTMLElement | null
+    const focusables = () => [...box.querySelectorAll<HTMLElement>(FOCUSABLE)]
+
+    focusables()[0]?.focus()
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+
+      const items = focusables()
+      const first = items[0]
+      const last = items.at(-1)
+      if (!first || !last) {
+        e.preventDefault()
+        return
+      }
+
+      // Le focus a fui hors de la boite (clic ailleurs, ordre inattendu) : on le
+      // ramene plutot que de laisser Tab continuer dans la page masquee.
+      if (!box.contains(document.activeElement)) {
+        e.preventDefault()
+        ;(e.shiftKey ? last : first).focus()
+        return
+      }
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      previous?.focus?.()
+    }
+  }, [active])
+
+  return ref
+}
+
 /** Suit la section visible pour l'indicateur de navigation. */
 export function useActiveSection(ids: string[]): string {
   const [active, setActive] = useState(ids[0] ?? '')

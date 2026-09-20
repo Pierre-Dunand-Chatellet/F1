@@ -1,30 +1,35 @@
-import { Nav } from './components/Nav.tsx'
-import { Magnetic } from './components/ui.tsx'
-import { useSeason } from './lib/api.ts'
-import { useReducedMotion, useSmoothScroll } from './lib/hooks.ts'
-import { Calendar } from './sections/Calendar.tsx'
-import { Hero } from './sections/Hero.tsx'
-import { History } from './sections/History.tsx'
-import { Teams } from './sections/Teams.tsx'
+import type { ReactNode } from 'react'
+import { Nav } from './Nav.tsx'
+import { Magnetic } from './ui.tsx'
+import { useReducedMotion, useSmoothScroll } from '../lib/hooks.ts'
+import { ROUTES, href } from '../lib/routes.ts'
 
-export function App() {
+/**
+ * Habillage commun aux quatre pages : barre de navigation, bandeau d'alerte,
+ * pied de page. Chaque page est un document independant, donc cet habillage
+ * est monte a chaque chargement — il doit rester leger.
+ */
+export function Page({
+  children,
+  stale = false,
+  bleed = false,
+}: {
+  children: ReactNode
+  /** Vrai quand les donnees affichees viennent de l'instantane du build. */
+  stale?: boolean
+  /** L'accueil passe sous la barre fixe ; les autres pages s'en ecartent. */
+  bleed?: boolean
+}) {
   const reduced = useReducedMotion()
   // Le defilement lisse est un confort, pas une fonctionnalite : on le coupe
   // des que l'utilisateur demande moins de mouvement.
   useSmoothScroll(!reduced)
 
-  const { races, teams, round, stale } = useSeason()
-
   return (
     <>
       <Nav />
-      <main>
-        {stale && <StaleBanner />}
-        <Hero races={races} round={round} />
-        <Teams teams={teams} />
-        <Calendar races={races} />
-        <History />
-      </main>
+      {stale && <StaleBanner />}
+      <main className={bleed || stale ? undefined : 'pt-[var(--nav-h)]'}>{children}</main>
       <Credits stale={stale} />
     </>
   )
@@ -45,21 +50,30 @@ function StaleBanner() {
 
 function Credits({ stale }: { stale: boolean }) {
   return (
-    <footer
-      id="credits"
-      className="border-t border-[var(--grid-line)] px-[var(--gutter)] py-14 text-sm text-carbon-300"
-    >
-      <p className="tech text-carbon-500">Sources</p>
+    <footer className="border-t border-[var(--grid-line)] px-[var(--gutter)] py-14 text-sm text-carbon-300">
+      <nav aria-label="Pages du site">
+        <ul className="flex flex-wrap gap-x-8 gap-y-2">
+          {ROUTES.map((route) => (
+            <li key={route.path}>
+              <a href={href(route.path)} className="pressable text-ink hover-rise inline-block">
+                <span className="tech mr-2 text-carbon-500">{route.index}</span>
+                {route.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
+      <p className="tech mt-12 text-carbon-500">Sources</p>
       <ul className="mt-5 grid gap-3 sm:grid-cols-3">
         <Source
-          href="https://jolpi.ca/"
+          url="https://jolpi.ca/"
           name="Jolpica-F1"
           detail="Calendrier, classements pilotes et constructeurs"
         />
-        <Source href="https://openf1.org/" name="OpenF1" detail="Grille et couleurs d’écurie" />
+        <Source url="https://openf1.org/" name="OpenF1" detail="Grille et couleurs d’écurie" />
         <Source
-          href="https://multiviewer.app/"
+          url="https://multiviewer.app/"
           name="MultiViewer"
           detail="Géométrie des tracés, figée au build"
         />
@@ -87,11 +101,11 @@ function Credits({ stale }: { stale: boolean }) {
   )
 }
 
-function Source({ href, name, detail }: { href: string; name: string; detail: string }) {
+function Source({ url, name, detail }: { url: string; name: string; detail: string }) {
   return (
     <li>
       <a
-        href={href}
+        href={url}
         target="_blank"
         rel="noreferrer noopener"
         className="pressable block text-ink transition-colors duration-150 hover:text-accent"

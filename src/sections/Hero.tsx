@@ -53,8 +53,8 @@ export function Hero({ races, round }: { races: Race[]; round: string }) {
 
         <p className="line-mask mt-8 max-w-md text-[0.95rem] leading-relaxed text-carbon-300">
           <span style={{ '--line-delay': '380ms' } as React.CSSProperties}>
-            Onze écuries, vingt-deux pilotes, vingt-trois Grands Prix. La grille, le calendrier et
-            soixante-quinze ans d'histoire.
+            Onze écuries, vingt-trois Grands Prix, soixante-quinze ans d'histoire. La saison en
+            cours, mise à jour à chaque course.
           </span>
         </p>
       </div>

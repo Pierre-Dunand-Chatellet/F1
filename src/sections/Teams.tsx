@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Reveal, SectionHeader, Stat } from '../components/ui.tsx'
+import { useFocusTrap } from '../lib/hooks.ts'
 import { nationality } from '../data/labels.ts'
 import type { Team } from '../lib/types.ts'
 
@@ -88,16 +89,9 @@ function TeamCard({ team, onOpen }: { team: Team; onOpen: () => void }) {
 }
 
 function TeamDetail({ team, onClose }: { team: Team; onClose: () => void }) {
-  const closeRef = useRef<HTMLButtonElement>(null)
-
-  // Sans ca, l'ouverture laisse le focus sur la carte, derriere la surcouche :
-  // au clavier, la fiche est invisible et Echap est le seul recours.
-  // A la fermeture, le focus revient sur la carte d'ou l'on vient.
-  useEffect(() => {
-    const previous = document.activeElement as HTMLElement | null
-    closeRef.current?.focus()
-    return () => previous?.focus?.()
-  }, [])
+  // Le bouton Fermer est le premier element focusable de la boite : le piege
+  // l'atteint donc en premier, et rend le focus a la carte a la fermeture.
+  const dialogRef = useFocusTrap<HTMLDivElement>(true)
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center p-4">
@@ -111,6 +105,7 @@ function TeamDetail({ team, onClose }: { team: Team; onClose: () => void }) {
       />
 
       <motion.div
+        ref={dialogRef}
         layoutId={`team-${team.constructorId}`}
         transition={SPRING}
         role="dialog"
@@ -126,7 +121,6 @@ function TeamDetail({ team, onClose }: { team: Team; onClose: () => void }) {
         />
 
         <button
-          ref={closeRef}
           onClick={onClose}
           aria-label="Fermer"
           className="pressable absolute right-5 top-5 text-carbon-300 transition-colors duration-150 hover:text-ink"
