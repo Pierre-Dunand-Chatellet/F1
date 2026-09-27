@@ -88,12 +88,6 @@ export function Calendar({ races }: { races: Race[] }) {
 export function NextRace({ race }: { race: Race }) {
   // Horloge rapide confinee ici : seul ce bloc se re-rend chaque seconde.
   const now = useNow()
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 85%', 'end 55%'] })
-  // Le trace se dessine au rythme du scroll : le ressort evite le tremblement
-  // d'un pathLength colle image par image a la molette.
-  const draw = useSpring(scrollYProgress, { stiffness: 80, damping: 22, mass: 0.4 })
-
   const start = raceStart(race)
   const left = start ? splitDuration(start.getTime() - now) : null
   const label = localise(race)
@@ -101,7 +95,6 @@ export function NextRace({ race }: { race: Race }) {
   return (
     <Reveal>
       <div
-        ref={ref}
         className="mt-14 grid items-center gap-10 border-y border-[var(--grid-line)] py-10 md:grid-cols-[1fr_minmax(0,22rem)]"
       >
         <div>
@@ -123,7 +116,6 @@ export function NextRace({ race }: { race: Race }) {
 
         <TrackMap
           circuitId={race.Circuit.circuitId}
-          progress={draw}
           className="aspect-square w-full"
         />
       </div>

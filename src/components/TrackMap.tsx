@@ -1,10 +1,10 @@
-import { motion, type MotionValue } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { CIRCUIT_TRACES } from '../data/circuits.generated.ts'
 
 /**
- * Trace vectoriel d'un circuit. `progress` pilote le dessin : soit une valeur
- * de scroll (MotionValue), soit rien — auquel cas le trace se dessine a
- * l'apparition.
+ * Trace vectoriel d'un circuit, dessine d'un trait quand il entre a l'ecran.
+ * Un dessin lie au scroll laissait le trace de l'accueil inacheve tant qu'on
+ * n'etait pas descendu jusqu'au classement.
  *
  * Un circuit sans geometrie (nouveau trace, aucune source) affiche un etat
  * vide honnete plutot qu'un trace inventé.
@@ -12,13 +12,11 @@ import { CIRCUIT_TRACES } from '../data/circuits.generated.ts'
 export function TrackMap({
   circuitId,
   colour = 'var(--color-accent)',
-  progress,
   showCorners = false,
   className,
 }: {
   circuitId: string
   colour?: string
-  progress?: MotionValue<number>
   showCorners?: boolean
   className?: string
 }) {
@@ -48,10 +46,10 @@ export function TrackMap({
         strokeWidth={14}
         strokeLinecap="round"
         strokeLinejoin="round"
-        style={progress ? { pathLength: progress } : undefined}
-        initial={progress ? undefined : { pathLength: 0 }}
-        animate={progress ? undefined : { pathLength: 1 }}
-        transition={progress ? undefined : { duration: 1.4, ease: [0.77, 0, 0.175, 1] }}
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 1.4, ease: [0.77, 0, 0.175, 1] }}
       />
 
       {showCorners &&
