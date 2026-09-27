@@ -6,8 +6,8 @@ import { CIRCUIT_TRACES } from '../data/circuits.generated.ts'
  * de scroll (MotionValue), soit rien — auquel cas le trace se dessine a
  * l'apparition.
  *
- * Deux circuits du calendrier n'ont pas de geometrie publiee (Madrid, Sepang) :
- * on affiche un etat vide honnete plutot qu'un trace inventé.
+ * Un circuit sans geometrie (nouveau trace, aucune source) affiche un etat
+ * vide honnete plutot qu'un trace inventé.
  */
 export function TrackMap({
   circuitId,

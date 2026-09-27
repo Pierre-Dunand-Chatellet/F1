@@ -65,17 +65,27 @@ function Credits({ stale }: { stale: boolean }) {
       </nav>
 
       <p className="tech mt-12 text-carbon-500">Sources</p>
-      <ul className="mt-5 grid gap-3 sm:grid-cols-3">
+      <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Source
           url="https://jolpi.ca/"
           name="Jolpica-F1"
           detail="Calendrier, classements pilotes et constructeurs"
         />
-        <Source url="https://openf1.org/" name="OpenF1" detail="Grille et couleurs d’écurie" />
+        <Source
+          url="https://openf1.org/"
+          name="OpenF1"
+          detail="Grille, couleurs d’écurie et tracé de Madrid"
+        />
         <Source
           url="https://multiviewer.app/"
           name="MultiViewer"
           detail="Géométrie des tracés, figée au build"
+        />
+        {/* Attribution exigee par la licence ODbL des donnees OSM. */}
+        <Source
+          url="https://www.openstreetmap.org/copyright"
+          name="© contributeurs OpenStreetMap"
+          detail="Tracé de Sepang, licence ODbL"
         />
       </ul>
 

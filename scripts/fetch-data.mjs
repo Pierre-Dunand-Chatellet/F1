@@ -42,6 +42,17 @@ const CIRCUIT_KEYS = {
   yas_marina: 70,
 }
 
+// Circuits absents de MultiViewer, et d'ou tirer leur trace a la place.
+// - Sepang : relation OpenStreetMap de type « circuit » (© contributeurs OSM,
+//   licence ODbL — attribution en pied de page).
+// - Madrid : OSM ne le couvre qu'a moitie (les portions sur route ouverte sont
+//   cartographiees comme des rues) ; on suit donc la voiture de Russell sur son
+//   meilleur tour des qualifications 2026, via les positions OpenF1.
+const FALLBACKS = {
+  sepang: () => osmCircuit(284496),
+  madring: () => openF1Circuit({ session: 11365, driver: 63, lap: 21, name: 'Madring' }),
+}
+
 async function getJSON(url) {
   const res = await fetch(url, { headers: { 'User-Agent': 'f1-site/1.0' } })
   if (!res.ok) throw new Error(`${res.status} ${res.statusText} — ${url}`)
@@ -161,6 +172,92 @@ export function toTrace(raw) {
 
 const round = (n) => Math.round(n * 10) / 10
 
+/**
+ * Trace d'un circuit a partir des positions d'une voiture sur un tour.
+ * OpenF1 emet environ 4 positions par seconde, dans le meme repere que
+ * MultiViewer (decimetres, Y vers le haut) : un tour suffit a dessiner la piste.
+ */
+async function openF1Circuit({ session, driver, lap, name }) {
+  const [info] = await getJSON(
+    `https://api.openf1.org/v1/laps?session_key=${session}&driver_number=${driver}&lap_number=${lap}`,
+  )
+  const from = new Date(info.date_start)
+  const to = new Date(from.getTime() + info.lap_duration * 1000)
+  const pos = await getJSON(
+    `https://api.openf1.org/v1/location?session_key=${session}&driver_number=${driver}` +
+      `&date>=${from.toISOString()}&date<=${to.toISOString()}`,
+  )
+  return { circuitName: name, rotation: 0, x: pos.map((p) => p.x), y: pos.map((p) => p.y), corners: [] }
+}
+
+const samePoint = (a, b) => a[0] === b[0] && a[1] === b[1]
+
+/**
+ * Recoud les segments d'un circuit OSM en une seule boucle.
+ * L'ordre des membres d'une relation n'est pas garanti (celle de Sepang les
+ * liste a rebours) : on cherche donc a chaque pas le segment qui part du bout
+ * courant, en le retournant s'il est saisi dans l'autre sens. Un trou dans le
+ * trace leve une erreur plutot que de dessiner un raccourci inexistant.
+ */
+export function chainWays(ways) {
+  const rest = ways.map((w) => [...w])
+  const loop = rest.shift()
+
+  while (rest.length) {
+    const end = loop.at(-1)
+    const i = rest.findIndex((w) => samePoint(w[0], end) || samePoint(w.at(-1), end))
+    if (i < 0) throw new Error('Trace OSM discontinu : un segment ne se raccorde a aucun autre.')
+    const [way] = rest.splice(i, 1)
+    loop.push(...(samePoint(way[0], end) ? way : way.reverse()).slice(1))
+  }
+
+  return loop
+}
+
+/** Relation OSM -> meme forme que la reponse MultiViewer, pour passer par toTrace. */
+async function osmCircuit(relationId) {
+  const query = `[out:json][timeout:25];relation(${relationId});out geom;`
+  // Overpass est un service benevole souvent sature (504, ou une page HTML en
+  // 200) : trois essais espaces avant d'abandonner.
+  let data
+  for (let attempt = 1; !data; attempt++) {
+    const res = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST',
+      headers: { 'User-Agent': 'f1-site/1.0' },
+      body: new URLSearchParams({ data: query }),
+    })
+    if (res.ok && res.headers.get('content-type')?.includes('json')) data = await res.json()
+    else if (attempt === 3) throw new Error(`Overpass indisponible (${res.status}), relancer plus tard.`)
+    else await new Promise((r) => setTimeout(r, 15_000))
+  }
+  const { members } = data.elements[0]
+
+  // Les voies des stands ont un role ; la piste n'en a pas.
+  const ways = members
+    .filter((m) => m.type === 'way' && !m.role)
+    .map((m) => m.geometry.map((g) => [g.lon, g.lat]))
+  let loop = chainWays(ways)
+
+  // Le dessin anime part de la ligne de depart quand OSM la connait.
+  const start = members.find((m) => m.type === 'node' && m.role === 'start')
+  if (start) {
+    const dist = (p) => Math.hypot(p[0] - start.lon, p[1] - start.lat)
+    const at = loop.reduce((best, p, i) => (dist(p) < dist(loop[best]) ? i : best), 0)
+    loop = [...loop.slice(at), ...loop.slice(1, at + 1)]
+  }
+
+  // Projection equirectangulaire : a l'echelle d'un circuit (3 km), l'ecart a
+  // une vraie projection est invisible. Y reste vers le haut, comme MultiViewer.
+  const k = Math.cos((loop[0][1] * Math.PI) / 180)
+  return {
+    circuitName: data.elements[0].tags.name,
+    rotation: 0,
+    x: loop.map((p) => p[0] * k),
+    y: loop.map((p) => p[1]),
+    corners: [],
+  }
+}
+
 async function main() {
   console.log(`Saison ${SEASON}\n`)
 
@@ -181,7 +278,8 @@ Ajoute-les dans CIRCUIT_KEYS (cherche la cle sur api.openf1.org/v1/meetings?year
     const key = CIRCUIT_KEYS[id]
     const res = await fetch(`https://api.multiviewer.app/api/v1/circuits/${key}/${SEASON}`)
     if (!res.ok) {
-      missing.push(id)
+      if (FALLBACKS[id]) traces[id] = toTrace(await FALLBACKS[id]())
+      else missing.push(id)
       continue
     }
     traces[id] = toTrace(await res.json())

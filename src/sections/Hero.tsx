@@ -1,33 +1,13 @@
-import { motion, useMotionTemplate, useScroll, useTransform } from 'framer-motion'
-import { useMemo, useRef } from 'react'
 import { GridLines } from '../components/ui.tsx'
-import { localise } from '../data/labels.ts'
-import { useNow, useReducedMotion } from '../lib/hooks.ts'
-import { sessionTimeline, splitDuration, upcomingIn } from '../lib/season.ts'
+import { nextRace } from '../lib/season.ts'
 import type { Race } from '../lib/types.ts'
+import { NextRace } from './Calendar.tsx'
 
-const pad = (n: number) => String(n).padStart(2, '0')
-
-export function Hero({ races, round }: { races: Race[]; round: string }) {
-  const ref = useRef<HTMLElement>(null)
-  const reduced = useReducedMotion()
-  const now = useNow()
-
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  // Parallaxe contenue : 72px de course au total, assez pour donner de la
-  // profondeur, trop peu pour qu'on la remarque consciemment.
-  const shift = useTransform(scrollYProgress, [0, 1], [0, 72])
-  const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0])
-  const transform = useMotionTemplate`translate3d(0, ${shift}px, 0)`
-
-  // La frise est construite une fois par calendrier : le compte a rebours bat
-  // la seconde, il ne doit pas recalculer 23 week-ends a chaque battement.
-  const timeline = useMemo(() => sessionTimeline(races), [races])
-  const upcoming = upcomingIn(timeline, now)
-  const left = upcoming ? splitDuration(upcoming.t - now) : null
+export function Hero({ races }: { races: Race[] }) {
+  const upcoming = nextRace(races)
 
   return (
-    <section ref={ref} id="hero" className="relative flex min-h-[100svh] flex-col justify-between">
+    <section id="hero" className="relative flex min-h-[100svh] flex-col justify-between">
       <GridLines />
 
       <div className="relative px-[var(--gutter)] pt-[22vh]">
@@ -59,39 +39,13 @@ export function Hero({ races, round }: { races: Race[]; round: string }) {
         </p>
       </div>
 
-      {/* Bandeau télémétrique : la donnée brute, traitée comme un affichage de stand. */}
-      <motion.div
-        style={reduced ? undefined : { transform, opacity: fade }}
-        className="relative border-t border-[var(--grid-line)] px-[var(--gutter)] py-6"
-      >
-        <dl className="flex flex-wrap items-end gap-x-12 gap-y-6">
-          <Readout label="Manche" value={round ? `${round} / ${races.length}` : '—'} />
-          <Readout label="Grands Prix" value={String(races.length)} />
-          <Readout
-            label={upcoming ? `Prochaine séance · ${upcoming.session.label}` : 'Saison'}
-            value={
-              left
-                ? `${left.d}j ${pad(left.h)}:${pad(left.m)}:${pad(left.s)}`
-                : 'Terminée'
-            }
-            accent
-          />
-          {upcoming && (
-            <Readout label="Lieu" value={localise(upcoming.race).locality} />
-          )}
-        </dl>
-      </motion.div>
+      {/* Le prochain Grand Prix ferme le premier ecran, a la place de l'ancien
+          bandeau de chiffres : compte a rebours et trace au meme endroit. */}
+      {upcoming && (
+        <div className="relative px-[var(--gutter)]">
+          <NextRace race={upcoming} />
+        </div>
+      )}
     </section>
-  )
-}
-
-function Readout({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div>
-      <dt className="tech text-carbon-300">{label}</dt>
-      <dd className={`tabular display mt-1.5 text-[clamp(1.1rem,2.4vw,1.75rem)] ${accent ? 'text-accent' : ''}`}>
-        {value}
-      </dd>
-    </div>
   )
 }

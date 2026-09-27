@@ -13,7 +13,7 @@ import {
   teamColours,
 } from './season.ts'
 // @ts-expect-error — script de build en JS, pas de declarations de types.
-import { simplify, toTrace } from '../../scripts/fetch-data.mjs'
+import { chainWays, simplify, toTrace } from '../../scripts/fetch-data.mjs'
 import { existsSync } from 'node:fs'
 import { ARCHIVE } from '../data/archive.ts'
 import { CIRCUIT_TRACES } from '../data/circuits.generated.ts'
@@ -243,11 +243,14 @@ assert.deepEqual(splitDuration(90_061_000), { d: 1, h: 1, m: 1, s: 1 })
   const traces = Object.entries(CIRCUIT_TRACES)
   assert.ok(traces.length >= 20, `seulement ${traces.length} traces generes`)
 
+  // Traces de secours (OSM, OpenF1) : aucune source ne numerote leurs virages.
+  const SANS_VIRAGES = ['sepang', 'madring']
+
   for (const [id, t] of traces) {
     const coords = (t.path.match(/-?\d+(\.\d+)?/g) ?? []).map(Number)
     assert.ok(Math.min(...coords) >= 0 && Math.max(...coords) <= 1000, `${id} sort du viewBox`)
     assert.ok(t.path.endsWith('Z'), `${id} : trace non ferme`)
-    assert.ok(t.corners.length > 0, `${id} : aucun virage`)
+    if (!SANS_VIRAGES.includes(id)) assert.ok(t.corners.length > 0, `${id} : aucun virage`)
   }
 
   // Un GP sans geometrie publiee est permis ; un trace vide ne l'est pas.
@@ -268,6 +271,20 @@ for (const photo of ARCHIVE) {
   assert.ok(photo.alt.length > 30, `${photo.src} : texte alternatif trop court`)
   assert.ok(photo.licence === 'CC0' || /public domain/i.test(photo.licence), `${photo.src} : licence non libre`)
 }
+
+// --- Recollage des segments OSM --------------------------------------------
+
+// Carre A-B-C-D donne dans le desordre, dont un segment saisi a l'envers.
+assert.deepEqual(
+  chainWays([
+    [[0, 0], [1, 0]],
+    [[0, 1], [1, 1]], // a l'envers : de D vers C
+    [[1, 0], [1, 1]],
+    [[0, 1], [0, 0]],
+  ]),
+  [[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]],
+)
+assert.throws(() => chainWays([[[0, 0], [1, 0]], [[5, 5], [6, 6]]]), /discontinu/)
 
 // --- Ecart au classement --------------------------------------------------
 
