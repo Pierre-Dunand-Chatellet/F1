@@ -4,9 +4,18 @@ import { useRef, useState } from 'react'
 import { TrackMap } from '../components/TrackMap.tsx'
 import { Reveal, SectionHeader } from '../components/ui.tsx'
 import { localise } from '../data/labels.ts'
+import { FALLBACK_COLOURS, TEAM_SHORT } from '../data/teams.ts'
+import { useRaceResults } from '../lib/api.ts'
 import { useNow, useReducedMotion } from '../lib/hooks.ts'
-import { buildWeekend, isSprintWeekend, nextRace, raceStart, splitDuration } from '../lib/season.ts'
-import type { Race, WeekendSession } from '../lib/types.ts'
+import {
+  buildWeekend,
+  isSprintWeekend,
+  nextRace,
+  raceStart,
+  resultGap,
+  splitDuration,
+} from '../lib/season.ts'
+import type { Race, RaceResult, WeekendSession } from '../lib/types.ts'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -118,6 +127,7 @@ function Unit({ value, label, accent }: { value: number; label: string; accent?:
 
 function RaceRow({ race, past, next }: { race: Race; past: boolean; next: boolean }) {
   const [open, setOpen] = useState(false)
+  const results = useRaceResults(race.round, open && past)
   const weekend = buildWeekend(race)
   const start = raceStart(race)
   const label = localise(race)
@@ -175,7 +185,8 @@ function RaceRow({ race, past, next }: { race: Race; past: boolean; next: boolea
                 showCorners
                 className="aspect-square w-full"
               />
-              <Weekend sessions={weekend} />
+              {/* Course passee : le classement remplace un programme devenu inutile. */}
+              {past ? <Results results={results} /> : <Weekend sessions={weekend} />}
             </div>
           </motion.div>
         )}
@@ -198,6 +209,59 @@ function Weekend({ sessions }: { sessions: WeekendSession[] }) {
           </li>
         ))}
       </ul>
+    </div>
+  )
+}
+
+function Results({ results }: { results: RaceResult[] | null | 'erreur' }) {
+  if (results === null) return <p className="tech text-carbon-500">Chargement du classement…</p>
+  if (results === 'erreur')
+    return <p className="tech text-carbon-500">Classement indisponible pour le moment.</p>
+  if (results.length === 0)
+    return <p className="tech text-carbon-500">Classement pas encore publié.</p>
+
+  const winnerLaps = Number(results[0]?.laps ?? 0)
+
+  return (
+    <div>
+      <p className="tech text-carbon-300">Classement de la course</p>
+      <ol className="mt-4 space-y-px bg-[var(--grid-line)]">
+        {results.map((r) => {
+          const classified = /^\d+$/.test(r.positionText)
+          return (
+            <li key={r.Driver.driverId} className="flex items-center gap-4 bg-void py-2.5">
+              <span
+                className={`tabular tech w-6 shrink-0 text-right ${
+                  r.position === '1' ? 'text-accent' : 'text-carbon-300'
+                }`}
+              >
+                {classified ? r.positionText : '—'}
+              </span>
+              <span
+                aria-hidden
+                className="h-4 w-[3px] shrink-0"
+                style={{ background: FALLBACK_COLOURS[r.Constructor.constructorId] ?? '#8A8F98' }}
+              />
+              <span className="min-w-0 flex-1 truncate">
+                <span className="hidden text-carbon-300 sm:inline">{r.Driver.givenName} </span>
+                {r.Driver.familyName}
+                <span className="tech ml-2 hidden text-carbon-500 sm:inline">
+                  {TEAM_SHORT[r.Constructor.constructorId] ?? r.Constructor.name}
+                </span>
+                {r.FastestLap?.rank === '1' && (
+                  <span className="tech ml-2 text-accent" title="Meilleur tour en course">
+                    MT
+                  </span>
+                )}
+              </span>
+              <span className="tabular shrink-0 text-sm text-carbon-300">{resultGap(r, winnerLaps)}</span>
+              <span className="tabular tech w-12 shrink-0 text-right text-carbon-500">
+                {Number(r.points) > 0 ? `+${r.points}` : ''}
+              </span>
+            </li>
+          )
+        })}
+      </ol>
     </div>
   )
 }

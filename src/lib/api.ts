@@ -10,6 +10,7 @@ import type {
   DriverStanding,
   OpenF1Driver,
   Race,
+  RaceResult,
   SeasonSnapshot,
   Team,
 } from './types.ts'
@@ -106,4 +107,35 @@ export function useSeason(): SeasonData {
   }, [])
 
   return { ...data, loading }
+}
+
+interface JolpicaResults {
+  MRData: { RaceTable: { Races: { Results: RaceResult[] }[] } }
+}
+
+/**
+ * Classement d'une course passee, charge seulement quand on ouvre sa ligne :
+ * 23 requetes au demarrage pour des tableaux que personne n'ouvre, non.
+ * null = en cours, [] = pas encore publie, 'erreur' = API injoignable.
+ */
+export function useRaceResults(round: string, enabled: boolean): RaceResult[] | null | 'erreur' {
+  const [results, setResults] = useState<RaceResult[] | null | 'erreur'>(null)
+  const loaded = results !== null && results !== 'erreur'
+
+  useEffect(() => {
+    // Deja charge : une ligne refermee puis rouverte ne refait pas la requete.
+    if (!enabled || loaded) return
+    const controller = new AbortController()
+    setResults(null)
+
+    getJSON<JolpicaResults>(`${JOLPICA}/${round}/results/?format=json&limit=30`, controller.signal)
+      .then((data) => setResults(data.MRData.RaceTable.Races[0]?.Results ?? []))
+      .catch(() => {
+        if (!controller.signal.aborted) setResults('erreur')
+      })
+
+    return () => controller.abort()
+  }, [round, enabled, loaded])
+
+  return results
 }

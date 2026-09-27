@@ -6,6 +6,7 @@ import type {
   DriverStanding,
   OpenF1Driver,
   Race,
+  RaceResult,
   Team,
   TeamDriver,
   WeekendSession,
@@ -178,4 +179,23 @@ export function splitDuration(ms: number): { d: number; h: number; m: number; s:
     m: Math.floor((total % 3600) / 60),
     s: total % 60,
   }
+}
+
+/**
+ * Ecart affiche a droite du classement.
+ *
+ * Deux pieges Jolpica, vus sur l'Australie 2026 : un pilote double recoit un
+ * `Time` mesure depuis le premier pilote de son tour (« +4.593 » pour Bearman,
+ * a un tour), et un non-classe porte `positionText` 'R' avec le statut
+ * « Lapped ». D'ou : la position d'abord, les tours de retard ensuite, le
+ * temps en dernier.
+ */
+export function resultGap(r: RaceResult, winnerLaps: number): string {
+  if (r.positionText === 'W') return 'Non partant'
+  if (r.positionText === 'D') return 'Disqualifié'
+  if (!/^\d+$/.test(r.positionText)) return r.status === 'Lapped' ? 'Non classé' : 'Abandon'
+
+  const behind = winnerLaps - Number(r.laps)
+  if (behind > 0) return `+${behind} tour${behind > 1 ? 's' : ''}`
+  return r.Time?.time ?? '—'
 }

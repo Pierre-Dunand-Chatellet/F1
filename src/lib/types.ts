@@ -138,3 +138,17 @@ export interface WeekendSession {
   start: Date | null
   kind: 'practice' | 'qualifying' | 'sprint' | 'race'
 }
+
+/** Une ligne du classement d'une course, telle que Jolpica la renvoie. */
+export interface RaceResult {
+  position: string
+  /** '1'..'22', ou 'R' abandon, 'W' non partant, 'D' disqualifie. */
+  positionText: string
+  points: string
+  laps: string
+  status: string
+  Driver: Driver
+  Constructor: Constructor
+  Time?: { time: string }
+  FastestLap?: { rank: string }
+}

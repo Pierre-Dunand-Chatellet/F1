@@ -8,6 +8,7 @@ import {
   dedupeDrivers,
   nextRace,
   nextSession,
+  resultGap,
   splitDuration,
   teamColours,
 } from './season.ts'
@@ -17,7 +18,7 @@ import { existsSync } from 'node:fs'
 import { ARCHIVE } from '../data/archive.ts'
 import { CIRCUIT_TRACES } from '../data/circuits.generated.ts'
 import { SEASON_SNAPSHOT } from '../data/season.snapshot.ts'
-import type { ConstructorStanding, DriverStanding, OpenF1Driver, Race } from './types.ts'
+import type { ConstructorStanding, DriverStanding, OpenF1Driver, Race, RaceResult } from './types.ts'
 
 const constructor_ = (constructorId: string, name: string) => ({
   constructorId,
@@ -267,5 +268,20 @@ for (const photo of ARCHIVE) {
   assert.ok(photo.alt.length > 30, `${photo.src} : texte alternatif trop court`)
   assert.ok(photo.licence === 'CC0' || /public domain/i.test(photo.licence), `${photo.src} : licence non libre`)
 }
+
+// --- Ecart au classement --------------------------------------------------
+
+const result = (positionText: string, laps: string, status: string, time?: string) =>
+  ({ positionText, laps, status, Time: time ? { time } : undefined }) as RaceResult
+
+// Cas reels de l'Australie 2026 (Russell vainqueur en 58 tours).
+assert.equal(resultGap(result('2', '58', 'Finished', '+2.974'), 58), '+2.974')
+// Double : le temps fourni est relatif a un autre pilote, on l'ignore.
+assert.equal(resultGap(result('7', '57', 'Lapped', '+4.593'), 58), '+1 tour')
+assert.equal(resultGap(result('16', '55', 'Lapped', '+7.850'), 58), '+3 tours')
+assert.equal(resultGap(result('R', '43', 'Lapped'), 58), 'Non classé')
+assert.equal(resultGap(result('R', '21', 'Retired'), 58), 'Abandon')
+assert.equal(resultGap(result('W', '0', 'Did not start'), 58), 'Non partant')
+assert.equal(resultGap(result('D', '58', 'Disqualified', '+9.000'), 58), 'Disqualifié')
 
 console.log('check : tout passe')
