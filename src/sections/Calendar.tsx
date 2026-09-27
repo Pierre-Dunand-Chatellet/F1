@@ -70,7 +70,7 @@ export function Calendar({ races }: { races: Race[] }) {
   )
 }
 
-function NextRace({ race }: { race: Race }) {
+export function NextRace({ race }: { race: Race }) {
   // Horloge rapide confinee ici : seul ce bloc se re-rend chaque seconde.
   const now = useNow()
   const ref = useRef<HTMLDivElement>(null)
