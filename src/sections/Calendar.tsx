@@ -31,6 +31,19 @@ export function Calendar({ races }: { races: Race[] }) {
   const upcoming = nextRace(races, new Date(now))
   const listRef = useRef<HTMLOListElement>(null)
   const reduced = useReducedMotion()
+  const [openRounds, setOpenRounds] = useState<string[]>([])
+
+  // Sur telephone, un seul GP deroule a la fois : deux fiches ouvertes font
+  // plusieurs ecrans de haut et on perd la liste. Sur grand ecran, on laisse
+  // comparer. Lu au clic plutot qu'en hook : aucun rendu ne depend de la largeur.
+  const toggle = (round: string) =>
+    setOpenRounds((rounds) =>
+      rounds.includes(round)
+        ? rounds.filter((r) => r !== round)
+        : window.matchMedia('(max-width: 767px)').matches
+          ? [round]
+          : [...rounds, round],
+    )
 
   const { scrollYProgress } = useScroll({
     target: listRef,
@@ -63,6 +76,8 @@ export function Calendar({ races }: { races: Race[] }) {
             race={race}
             past={(raceStart(race)?.getTime() ?? 0) < now}
             next={race.round === upcoming?.round}
+            open={openRounds.includes(race.round)}
+            onToggle={() => toggle(race.round)}
           />
         ))}
       </ol>
@@ -125,17 +140,38 @@ function Unit({ value, label, accent }: { value: number; label: string; accent?:
   )
 }
 
-function RaceRow({ race, past, next }: { race: Race; past: boolean; next: boolean }) {
-  const [open, setOpen] = useState(false)
+function RaceRow({
+  race,
+  past,
+  next,
+  open,
+  onToggle,
+}: {
+  race: Race
+  past: boolean
+  next: boolean
+  open: boolean
+  onToggle: () => void
+}) {
+  const rowRef = useRef<HTMLLIElement>(null)
   const results = useRaceResults(race.round, open && past)
   const weekend = buildWeekend(race)
   const start = raceStart(race)
   const label = localise(race)
 
   return (
-    <li className="border-b border-[var(--grid-line)]">
+    <li ref={rowRef} className="scroll-mt-[var(--nav-h)] border-b border-[var(--grid-line)]">
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          onToggle()
+          if (open) return
+          // Si la fiche refermee etait au-dessus, la ligne cliquee remonte hors
+          // de l'ecran : on la ramene sous la barre une fois le repli fini.
+          window.setTimeout(() => {
+            const top = rowRef.current?.getBoundingClientRect().top ?? 0
+            if (top < 0) rowRef.current?.scrollIntoView({ block: 'start' })
+          }, 320)
+        }}
         aria-expanded={open}
         className={`pressable flex w-full items-center gap-5 py-5 pl-7 text-left transition-opacity duration-200 ${
           // Un GP passe est estompe — sauf quand on vient de l'ouvrir pour le lire.
