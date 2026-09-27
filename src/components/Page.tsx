@@ -69,7 +69,7 @@ function Credits({ stale }: { stale: boolean }) {
         <Source
           url="https://jolpi.ca/"
           name="Jolpica-F1"
-          detail="Calendrier, classements pilotes et constructeurs"
+          detail="Calendrier, résultats des courses, classements pilotes et constructeurs"
         />
         <Source url="https://openf1.org/" name="OpenF1" detail="Grille et couleurs d’écurie" />
         <Source

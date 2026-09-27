@@ -9,6 +9,9 @@
 import { writeFile } from 'node:fs/promises'
 
 const SEASON = 2026
+// Doit rester egal a TOP_FINISHERS (src/lib/season.ts) : ce script tourne sous
+// Node sans etape TypeScript et ne peut pas l'importer.
+const TOP_FINISHERS = 6
 const VIEWBOX = 1000
 const PADDING = 48
 
@@ -161,6 +164,30 @@ export function toTrace(raw) {
 
 const round = (n) => Math.round(n * 10) / 10
 
+/**
+ * Premiers classes de chaque course courue, par manche. Jolpica pagine par
+ * ligne de resultat (100 au plus) : une course peut etre coupee entre deux
+ * pages, d'ou l'accumulation plutot qu'une affectation.
+ */
+async function fetchTopResults() {
+  const byRound = {}
+  let total = Infinity
+  for (let offset = 0; offset < total; offset += 100) {
+    const data = (
+      await getJSON(`https://api.jolpi.ca/ergast/f1/${SEASON}/results/?format=json&limit=100&offset=${offset}`)
+    ).MRData
+    total = Number(data.total)
+    for (const race of data.RaceTable.Races) {
+      for (const { position, points, status, Time, Driver, Constructor } of race.Results) {
+        if (Number(position) > TOP_FINISHERS) continue
+        // Seuls les champs lus par le site : la sauvegarde est embarquee dans le bundle.
+        ;(byRound[race.round] ??= []).push({ position, points, status, Time, Driver, Constructor })
+      }
+    }
+  }
+  return byRound
+}
+
 async function main() {
   console.log(`Saison ${SEASON}\n`)
 
@@ -196,6 +223,8 @@ Ajoute-les dans CIRCUIT_KEYS (cherche la cle sur api.openf1.org/v1/meetings?year
     getJSON(`https://api.jolpi.ca/ergast/f1/${SEASON}/constructorstandings/?format=json&limit=60`),
     getJSON('https://api.openf1.org/v1/drivers?meeting_key=latest'),
   ])
+  // Apres les classements, pas en parallele : Jolpica limite le debit par rafale.
+  const results = await fetchTopResults()
 
   const snapshot = {
     generatedAt: new Date().toISOString(),
@@ -205,8 +234,10 @@ Ajoute-les dans CIRCUIT_KEYS (cherche la cle sur api.openf1.org/v1/meetings?year
     constructorStandings: constructorStandings.MRData.StandingsTable.StandingsLists[0] ?? null,
     // OpenF1 renvoie une ligne par session : on deduplique par numero de pilote.
     drivers: [...new Map(drivers.map((d) => [d.driver_number, d])).values()],
+    results,
   }
   console.log(`  ${snapshot.drivers.length} pilotes, classement arrete au round ${snapshot.driverStandings?.round}`)
+  console.log(`  ${Object.keys(results).length} classements d'arrivee (${TOP_FINISHERS} premiers)`)
 
   const banner = '// Genere par scripts/fetch-data.mjs — ne pas editer a la main.\n'
 

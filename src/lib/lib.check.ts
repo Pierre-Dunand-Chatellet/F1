@@ -10,6 +10,7 @@ import {
   nextSession,
   splitDuration,
   teamColours,
+  topFinishers,
 } from './season.ts'
 // @ts-expect-error — script de build en JS, pas de declarations de types.
 import { simplify, toTrace } from '../../scripts/fetch-data.mjs'
@@ -17,7 +18,7 @@ import { existsSync } from 'node:fs'
 import { ARCHIVE } from '../data/archive.ts'
 import { CIRCUIT_TRACES } from '../data/circuits.generated.ts'
 import { SEASON_SNAPSHOT } from '../data/season.snapshot.ts'
-import type { ConstructorStanding, DriverStanding, OpenF1Driver, Race } from './types.ts'
+import type { ConstructorStanding, DriverStanding, OpenF1Driver, Race, RaceResult } from './types.ts'
 
 const constructor_ = (constructorId: string, name: string) => ({
   constructorId,
@@ -180,6 +181,75 @@ const race = (over: Partial<Race> & Pick<Race, 'round' | 'date'>): Race =>
     [],
     'un pilote fidele n a pas d ecurie precedente',
   )
+}
+
+// --- Classement d'arrivee -------------------------------------------------
+
+{
+  const arrivee = (
+    position: string,
+    driverId: string,
+    constructorId: string,
+    extra: Partial<RaceResult> = {},
+  ): RaceResult => ({
+    position,
+    points: '0',
+    status: 'Finished',
+    Driver: { driverId, givenName: 'Prenom', familyName: driverId, nationality: 'X', url: '' },
+    Constructor: constructor_(constructorId, `Nom API ${constructorId}`),
+    ...extra,
+  })
+
+  // Donne dans le desordre, avec des positions a deux chiffres : '10' < '2' en lexical.
+  const brut = [
+    arrivee('10', 'dixieme', 'haas'),
+    arrivee('2', 'deuxieme', 'ferrari', { Time: { time: '+5.123' } }),
+    arrivee('1', 'premier', 'mercedes', { Time: { time: '1:32:10.456' } }),
+    arrivee('7', 'septieme', 'alpine'),
+    arrivee('6', 'sixieme', 'inconnue', { status: 'Engine' }),
+    arrivee('5', 'cinquieme', 'williams', { status: 'Lapped' }),
+    arrivee('4', 'quatrieme', 'rb', { status: '+2 Laps' }),
+    arrivee('3', 'troisieme', 'mclaren', { status: '+1 Lap' }),
+  ]
+
+  const top = topFinishers(brut, { mercedes: '#00D2BE' })
+
+  assert.deepEqual(
+    top.map((f) => f.position),
+    [1, 2, 3, 4, 5, 6],
+    'les six premiers, dans l ordre numerique, et pas au-dela',
+  )
+  assert.equal(top[0]?.driverId, 'premier')
+  assert.equal(top[0]?.gap, '1:32:10.456', 'le vainqueur affiche son temps de course')
+  assert.equal(top[1]?.gap, '+5.123', 'les suivants leur ecart')
+  assert.equal(top[2]?.gap, '+1 tour', 'singulier')
+  assert.equal(top[3]?.gap, '+2 tours', 'pluriel')
+  assert.equal(top[4]?.gap, 'Doublé', 'statut Jolpica depuis 2025')
+  assert.equal(top[5]?.gap, 'Abandon', 'classe sans avoir fini')
+
+  assert.equal(top[0]?.colour, '#00D2BE', 'la couleur OpenF1 prime')
+  assert.equal(top[1]?.colour, '#E8002D', 'repli sur la teinte figee')
+  assert.equal(top[5]?.colour, '#8A8F98', 'ecurie inconnue : gris neutre, pas de plantage')
+  assert.equal(top[3]?.team, 'Racing Bulls', 'nom court du site')
+  assert.equal(top[5]?.team, 'Nom API inconnue', 'repli sur le nom de l API')
+
+  assert.equal(topFinishers([], {}).length, 0, 'course sans classement')
+  assert.equal(
+    topFinishers([arrivee('R', 'abandon', 'haas'), arrivee('1', 'seul', 'haas')], {}).length,
+    1,
+    'une position non numerique est ignoree',
+  )
+}
+
+{
+  // La sauvegarde, quand elle contient des resultats, doit etre exploitable.
+  for (const [round, results] of Object.entries(SEASON_SNAPSHOT.results ?? {})) {
+    assert.ok(
+      SEASON_SNAPSHOT.races.some((r) => r.round === round),
+      `resultats de la manche ${round} sans course au calendrier`,
+    )
+    assert.ok(topFinishers(results, {}).length > 0, `manche ${round} : classement vide`)
+  }
 }
 
 // --- Compte a rebours ------------------------------------------------------

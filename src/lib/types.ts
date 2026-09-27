@@ -78,6 +78,22 @@ export interface StandingsList<T> {
   ConstructorStandings?: T extends ConstructorStanding ? ConstructorStanding[] : never
 }
 
+/** Une ligne du classement d'arrivee d'un Grand Prix. */
+export interface RaceResult {
+  position: string
+  points: string
+  /** 'Finished', '+1 Lap', 'Lapped', ou la cause d'un abandon. */
+  status: string
+  Driver: Driver
+  Constructor: Constructor
+  /** Temps de course pour le vainqueur, ecart ('+5.123s') pour les suivants. Absent si double. */
+  Time?: { time: string }
+}
+
+export interface RaceWithResults extends Race {
+  Results: RaceResult[]
+}
+
 // --- OpenF1 ---
 
 export interface OpenF1Driver {
@@ -102,6 +118,11 @@ export interface SeasonSnapshot {
     | { season: string; round: string; ConstructorStandings: ConstructorStanding[] }
     | null
   drivers: OpenF1Driver[]
+  /**
+   * Premiers classes de chaque course deja courue, par numero de manche.
+   * Optionnel : les sauvegardes generees avant l'ajout des resultats n'en ont pas.
+   */
+  results?: Record<string, RaceResult[]>
 }
 
 /** Une ecurie telle qu'affichee : classement Jolpica + identite visuelle OpenF1. */
@@ -129,6 +150,19 @@ export interface TeamDriver {
   wins: number
   /** Autres ecuries pour lesquelles il a couru cette saison, s'il en a change. */
   otherTeams: string[]
+}
+
+/** Un pilote classe a l'arrivee, tel qu'affiche. */
+export interface Finisher {
+  position: number
+  driverId: string
+  firstName: string
+  lastName: string
+  team: string
+  /** Couleur de livree de son ecurie, '#RRGGBB'. */
+  colour: string
+  /** Temps du vainqueur, ecart des suivants, ou retard en tours. */
+  gap: string
 }
 
 /** Une seance d'un week-end de course, horodatee. */

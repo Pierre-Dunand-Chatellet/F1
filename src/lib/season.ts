@@ -4,8 +4,10 @@
 import type {
   ConstructorStanding,
   DriverStanding,
+  Finisher,
   OpenF1Driver,
   Race,
+  RaceResult,
   Team,
   TeamDriver,
   WeekendSession,
@@ -167,6 +169,51 @@ export function buildTeams(
     wins: Number(s.wins),
     drivers: (byTeam.get(s.Constructor.constructorId) ?? []).sort((a, b) => a.position - b.position),
   }))
+}
+
+/** constructorId -> couleur, depuis la grille deja assemblee. */
+export const coloursByTeam = (teams: Team[]): Record<string, string> =>
+  Object.fromEntries(teams.map((t) => [t.constructorId, t.colour]))
+
+/** Nombre de pilotes retenus au classement d'arrivee. */
+export const TOP_FINISHERS = 6
+
+/**
+ * Retard d'un pilote sans temps publie. Jolpica ecrit '+1 Lap' / '+2 Laps'
+ * sur les saisons anciennes et 'Lapped' depuis 2025 : on traduit les deux.
+ * Toute autre valeur est une cause d'abandon — un pilote peut etre classe
+ * sans avoir fini, s'il a couvert 90 % de la distance.
+ */
+function statusLabel(status: string): string {
+  const laps = /^\+(\d+) Laps?$/.exec(status)
+  if (laps) return `+${laps[1]} ${laps[1] === '1' ? 'tour' : 'tours'}`
+  if (status === 'Lapped') return 'Doublé'
+  if (status === 'Finished') return '—'
+  return 'Abandon'
+}
+
+/**
+ * Les premiers de l'arrivee, dans l'ordre. Le tri est refait ici plutot que
+ * suppose : `position` est une chaine, et '10' < '2' en ordre lexical.
+ */
+export function topFinishers(
+  results: RaceResult[],
+  colours: Record<string, string>,
+  count: number = TOP_FINISHERS,
+): Finisher[] {
+  return results
+    .map((r) => ({ r, position: Number(r.position) }))
+    .filter(({ position }) => Number.isInteger(position) && position >= 1 && position <= count)
+    .sort((a, b) => a.position - b.position)
+    .map(({ r, position }) => ({
+      position,
+      driverId: r.Driver.driverId,
+      firstName: r.Driver.givenName,
+      lastName: r.Driver.familyName,
+      team: TEAM_SHORT[r.Constructor.constructorId] ?? r.Constructor.name,
+      colour: colours[r.Constructor.constructorId] ?? FALLBACK_COLOURS[r.Constructor.constructorId] ?? '#8A8F98',
+      gap: r.Time?.time ?? statusLabel(r.status),
+    }))
 }
 
 /** Decompose un intervalle en jours / heures / minutes / secondes. */

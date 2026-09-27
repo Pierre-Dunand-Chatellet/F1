@@ -4,11 +4,11 @@ import { mount } from '../mount.tsx'
 import { Calendar } from '../sections/Calendar.tsx'
 
 function Calendrier() {
-  const { races, stale } = useSeason()
+  const { races, teams, stale } = useSeason()
 
   return (
     <Page stale={stale}>
-      <Calendar races={races} />
+      <Calendar races={races} teams={teams} />
     </Page>
   )
 }

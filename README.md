@@ -17,9 +17,9 @@ Ce site a été codé avec l'IA (Claude Code). Il fait partie de mon
 
 | Page | Contenu |
 | --- | --- |
-| Accueil | Manche en cours, compte à rebours avant la prochaine séance |
+| Accueil | Manche en cours, compte à rebours avant la prochaine séance, six premiers du dernier Grand Prix |
 | Écuries | Les 11 écuries de 2026 et leurs pilotes |
-| Calendrier | Les 23 Grands Prix, avec le tracé de chaque circuit |
+| Calendrier | Les 23 Grands Prix, avec le tracé de chaque circuit et les six premiers de chaque course courue |
 | Histoire | Les grandes époques du championnat, avec deux photos d'archive |
 
 Le site est construit en **plusieurs vraies pages HTML** plutôt qu'avec un routeur côté
@@ -28,7 +28,7 @@ donc un lien direct vers une sous-page renverrait une erreur 404.
 
 ## D'où viennent les données
 
-- [Jolpica-F1](https://jolpi.ca/) : calendrier, classements pilotes et constructeurs.
+- [Jolpica-F1](https://jolpi.ca/) : calendrier, résultats des courses, classements pilotes et constructeurs.
 - [OpenF1](https://openf1.org/) : grille et couleurs des écuries.
 - [MultiViewer](https://multiviewer.app/) : géométrie des tracés, figée au moment du build.
 - Photos d'archive : fonds Anefo, licence CC0.
@@ -36,6 +36,9 @@ donc un lien direct vers une sous-page renverrait une erreur 404.
 Jolpica et OpenF1 sont interrogés par le navigateur du visiteur au chargement de la page.
 Si l'un des deux ne répond pas, le site affiche la dernière sauvegarde
 (`src/data/season.snapshot.ts`) et le signale.
+
+Le classement d'arrivée d'une course n'est demandé qu'à l'ouverture de sa ligne dans le
+calendrier : charger les vingt-trois d'un coup dépasserait la limite de débit de Jolpica.
 
 Les deux sources ne s'accordent pas toujours : le calendrier de Jolpica fait foi.
 
@@ -49,7 +52,7 @@ npm run dev          # serveur de développement
 npm run build        # vérification TypeScript puis build dans dist/
 npm run lint
 npm run check        # vérifications de la logique de src/lib
-npm run fetch-data   # régénère les tracés et la sauvegarde du calendrier
+npm run fetch-data   # régénère les tracés et la sauvegarde (calendrier, résultats)
 ```
 
 Le site est servi depuis le sous-dossier `/f1/` (`base` dans `vite.config.ts`).

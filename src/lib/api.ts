@@ -4,18 +4,22 @@
 
 import { useEffect, useState } from 'react'
 import { SEASON_SNAPSHOT } from '../data/season.snapshot.ts'
-import { buildTeams, dedupeDrivers } from './season.ts'
+import { TOP_FINISHERS, buildTeams, dedupeDrivers } from './season.ts'
 import type {
   ConstructorStanding,
   DriverStanding,
   OpenF1Driver,
   Race,
+  RaceWithResults,
   SeasonSnapshot,
   Team,
 } from './types.ts'
 
 interface JolpicaRaces {
   MRData: { RaceTable: { Races: Race[] } }
+}
+interface JolpicaResults {
+  MRData: { RaceTable: { Races: RaceWithResults[] } }
 }
 interface JolpicaStandings<K extends string, T> {
   MRData: { StandingsTable: { StandingsLists: ({ round: string } & Record<K, T[]>)[] } }
@@ -36,7 +40,7 @@ export interface SeasonData {
   loading: boolean
 }
 
-async function getJSON<T>(url: string, signal: AbortSignal): Promise<T> {
+async function getJSON<T>(url: string, signal?: AbortSignal): Promise<T> {
   const res = await fetch(url, { signal })
   if (!res.ok) throw new Error(`${res.status} ${url}`)
   return res.json() as Promise<T>
@@ -106,4 +110,78 @@ export function useSeason(): SeasonData {
   }, [])
 
   return { ...data, loading }
+}
+
+// --- Classement d'arrivee --------------------------------------------------
+
+export type ResultsState =
+  | { status: 'loading' }
+  | { status: 'ready'; race: RaceWithResults; stale: boolean }
+  /** La course a eu lieu mais Jolpica n'a pas encore publie son classement. */
+  | { status: 'pending' }
+  | { status: 'error' }
+
+/**
+ * Une requete par course et par chargement de page : rouvrir une ligne du
+ * calendrier ne relance pas le reseau. On garde la promesse plutot que le
+ * resultat, pour que deux demandes simultanees partagent la meme requete.
+ */
+const resultsCache = new Map<string, Promise<RaceWithResults | null>>()
+
+function fetchResults(which: string): Promise<RaceWithResults | null> {
+  let pending = resultsCache.get(which)
+  if (!pending) {
+    pending = getJSON<JolpicaResults>(
+      `${JOLPICA}/${which}/results/?format=json&limit=${TOP_FINISHERS}`,
+    ).then((r) => r.MRData.RaceTable.Races[0] ?? null)
+    // Un echec ne doit pas rester en cache : on retentera a la prochaine ouverture.
+    pending.catch(() => resultsCache.delete(which))
+    resultsCache.set(which, pending)
+  }
+  return pending
+}
+
+/** Classement tire de la sauvegarde du build, quand l'API ne repond pas. */
+function snapshotResults(which: string): RaceWithResults | null {
+  const saved = SEASON_SNAPSHOT.results ?? {}
+  const round =
+    which === 'last'
+      ? String(Math.max(0, ...Object.keys(saved).map(Number)))
+      : which
+  const results = saved[round]
+  const race = SEASON_SNAPSHOT.races.find((r) => r.round === round)
+  return results?.length && race ? { ...race, Results: results } : null
+}
+
+/**
+ * Les premiers classes d'une course : `which` est un numero de manche, ou
+ * 'last' pour la derniere course dont le classement est publie.
+ */
+export function useRaceResults(which: string): ResultsState {
+  const [state, setState] = useState<ResultsState>({ status: 'loading' })
+
+  useEffect(() => {
+    // Pas d'AbortController : la requete est partagee via le cache, la couper
+    // pour un composant demonte la couperait pour tous. On ignore la reponse.
+    let cancelled = false
+    setState({ status: 'loading' })
+
+    fetchResults(which).then(
+      (race) => {
+        if (!cancelled) setState(race ? { status: 'ready', race, stale: false } : { status: 'pending' })
+      },
+      (err) => {
+        if (cancelled) return
+        console.warn('Classement indisponible, repli sur l instantane du build.', err)
+        const saved = snapshotResults(which)
+        setState(saved ? { status: 'ready', race: saved, stale: true } : { status: 'error' })
+      },
+    )
+
+    return () => {
+      cancelled = true
+    }
+  }, [which])
+
+  return state
 }

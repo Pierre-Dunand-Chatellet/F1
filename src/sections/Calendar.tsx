@@ -1,12 +1,13 @@
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { useRef, useState } from 'react'
+import { RaceResults } from '../components/Results.tsx'
 import { TrackMap } from '../components/TrackMap.tsx'
 import { Reveal, SectionHeader } from '../components/ui.tsx'
 import { localise } from '../data/labels.ts'
 import { useNow, useReducedMotion } from '../lib/hooks.ts'
 import { buildWeekend, isSprintWeekend, nextRace, raceStart, splitDuration } from '../lib/season.ts'
-import type { Race, WeekendSession } from '../lib/types.ts'
+import type { Race, Team, WeekendSession } from '../lib/types.ts'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -14,7 +15,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
 const dateFmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
 const timeFmt = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' })
 
-export function Calendar({ races }: { races: Race[] }) {
+export function Calendar({ races, teams }: { races: Race[]; teams: Team[] }) {
   // Horloge lente : cette liste sert seulement a savoir quels GP sont passes.
   // La faire battre a la seconde re-rendrait 23 lignes par seconde pour rien —
   // le compte a rebours a sa propre horloge, a l'interieur de NextRace.
@@ -52,6 +53,7 @@ export function Calendar({ races }: { races: Race[] }) {
           <RaceRow
             key={race.round}
             race={race}
+            teams={teams}
             past={(raceStart(race)?.getTime() ?? 0) < now}
             next={race.round === upcoming?.round}
           />
@@ -116,7 +118,17 @@ function Unit({ value, label, accent }: { value: number; label: string; accent?:
   )
 }
 
-function RaceRow({ race, past, next }: { race: Race; past: boolean; next: boolean }) {
+function RaceRow({
+  race,
+  teams,
+  past,
+  next,
+}: {
+  race: Race
+  teams: Team[]
+  past: boolean
+  next: boolean
+}) {
   const [open, setOpen] = useState(false)
   const weekend = buildWeekend(race)
   const start = raceStart(race)
@@ -175,7 +187,11 @@ function RaceRow({ race, past, next }: { race: Race; past: boolean; next: boolea
                 showCorners
                 className="aspect-square w-full"
               />
-              <Weekend sessions={weekend} />
+              {/* Course courue : l'arrivee passe avant le programme, c'est ce qu'on vient lire. */}
+              <div className="space-y-10">
+                {past && <RaceResults round={race.round} teams={teams} />}
+                <Weekend sessions={weekend} />
+              </div>
             </div>
           </motion.div>
         )}
