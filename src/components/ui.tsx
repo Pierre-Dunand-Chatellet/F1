@@ -34,10 +34,13 @@ export function SectionHeader({
   index,
   title,
   lede,
+  as: Heading = 'h2',
 }: {
   index: string
   title: string
   lede?: string
+  /** 'h1' pour le titre principal d'une page qui n'a pas de hero (une seule fois par page). */
+  as?: 'h1' | 'h2'
 }) {
   return (
     <header className="border-t border-[var(--grid-line)] pt-6">
@@ -45,7 +48,7 @@ export function SectionHeader({
         <p className="tech text-accent">{index}</p>
       </Reveal>
       <Reveal delay={60}>
-        <h2 className="display mt-4 text-[clamp(2.5rem,7vw,5.5rem)]">{title}</h2>
+        <Heading className="display mt-4 text-[clamp(2.5rem,7vw,5.5rem)]">{title}</Heading>
       </Reveal>
       {lede && (
         <Reveal delay={120}>

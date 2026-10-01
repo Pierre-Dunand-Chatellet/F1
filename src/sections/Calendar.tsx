@@ -54,6 +54,7 @@ export function Calendar({ races }: { races: Race[] }) {
   return (
     <section id="calendrier" className="relative px-[var(--gutter)] py-[12vh]">
       <SectionHeader
+        as="h1"
         index="02 — Saison"
         title="Calendrier"
         lede="Vingt-trois Grands Prix, six week-ends sprint. Les horaires sont convertis dans votre fuseau."

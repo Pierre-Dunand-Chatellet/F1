@@ -107,7 +107,7 @@ function HistoryScroller() {
         <header className="shrink-0 px-[var(--gutter)]">
           <p className="tech text-accent">03 — Archives</p>
           <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-2">
-            <h2 className="display text-[clamp(2rem,5vw,3.5rem)]">Soixante-quinze ans</h2>
+            <h1 className="display text-[clamp(2rem,5vw,3.5rem)]">Soixante-quinze ans</h1>
             <p className="text-sm text-carbon-300">
               Chaque époque tient dans une rupture technique et un duel.
             </p>
@@ -138,6 +138,7 @@ function HistoryStacked() {
   return (
     <section id="histoire" className="px-[var(--gutter)] py-[12vh]">
       <SectionHeader
+        as="h1"
         index="03 — Archives"
         title="Soixante-quinze ans"
         lede="Chaque époque de la Formule 1 tient dans une rupture technique et un duel."

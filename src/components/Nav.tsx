@@ -40,9 +40,17 @@ export function Nav() {
   }, [])
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-40 border-b border-[var(--grid-line)] bg-void/80 backdrop-blur-md">
+    <nav
+      aria-label="Navigation principale"
+      className="fixed inset-x-0 top-0 z-40 border-b border-[var(--grid-line)] bg-void/80 backdrop-blur-md"
+    >
       <div className="flex h-[var(--nav-h)] items-center justify-between px-[var(--gutter)]">
-        <a href={href('')} className="tech pressable text-ink" aria-label="Accueil">
+        {/* after: zone de clic invisible (≥ 44 px de haut, WCAG 2.5.8) sans changer la mise en page. */}
+        <a
+          href={href('')}
+          className="tech pressable relative text-ink after:absolute after:-inset-x-3 after:-inset-y-3.5"
+          aria-label="Accueil"
+        >
           F1<span className="text-accent">.</span>
         </a>
 
@@ -55,7 +63,8 @@ export function Nav() {
                     items.current[i] = el
                   }}
                   href={href(route.path)}
-                  className="tech pressable block text-carbon-300"
+                  aria-current={currentRoute() === route ? 'page' : undefined}
+                  className="tech pressable relative block text-carbon-300 after:absolute after:-inset-x-1.5 after:-inset-y-3.5"
                 >
                   {route.label}
                 </a>

@@ -24,6 +24,7 @@ export function Teams({ teams }: { teams: Team[] }) {
   return (
     <section id="ecuries" className="relative px-[var(--gutter)] py-[12vh]">
       <SectionHeader
+        as="h1"
         index="01 — Grille"
         title="Écuries"
         lede="Onze constructeurs au championnat. Classement, palmarès et pilotes engagés, mis à jour à chaque Grand Prix."

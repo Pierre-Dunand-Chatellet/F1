@@ -27,9 +27,22 @@ export function Page({
 
   return (
     <>
+      {/* Lien d'évitement (WCAG 2.4.1) : caché hors focus, il passe au-dessus de la barre fixe. */}
+      <a
+        href="#contenu"
+        className="tech fixed left-[var(--gutter)] top-[-5rem] z-50 bg-accent px-4 py-3 text-void focus:top-2"
+      >
+        Aller au contenu
+      </a>
       <Nav />
       {stale && <StaleBanner />}
-      <main className={bleed || stale ? undefined : 'pt-[var(--nav-h)]'}>{children}</main>
+      <main
+        id="contenu"
+        tabIndex={-1}
+        className={`outline-none ${bleed || stale ? '' : 'pt-[var(--nav-h)]'}`}
+      >
+        {children}
+      </main>
       <Credits stale={stale} />
     </>
   )
