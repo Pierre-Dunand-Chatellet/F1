@@ -42,7 +42,7 @@ export function Sommaire({ races, teams }: { races: Race[]; teams: Team[] }) {
               <span className="tabular tech w-10 shrink-0 text-carbon-500">{route.index}</span>
 
               <span className="min-w-0 flex-1">
-                <span className="display block text-[clamp(1.8rem,5vw,3.25rem)]">{route.label}</span>
+                <span className="display block text-[clamp(1.2rem,4.2vw,2.7rem)]">{route.label}</span>
                 <span className="mt-1 block text-sm text-carbon-300">{teasers[route.path]}</span>
               </span>
 

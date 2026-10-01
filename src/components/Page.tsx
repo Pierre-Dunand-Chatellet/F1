@@ -110,7 +110,15 @@ function Credits({ stale }: { stale: boolean }) {
         {stale && ' Les données affichées proviennent actuellement d’une sauvegarde locale.'}
       </p>
 
-      <p className="mt-8">
+      <p className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+        <Magnetic>
+          <a
+            href="https://dunandchatellet.fr/"
+            className="pressable inline-block border-b border-carbon-500 pb-0.5 text-ink"
+          >
+            ← dunandchatellet.fr
+          </a>
+        </Magnetic>
         <Magnetic>
           <a
             href="https://dunandchatellet.fr/mentions-legales.html"

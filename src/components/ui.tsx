@@ -48,7 +48,7 @@ export function SectionHeader({
         <p className="tech text-accent">{index}</p>
       </Reveal>
       <Reveal delay={60}>
-        <Heading className="display mt-4 text-[clamp(2.5rem,7vw,5.5rem)]">{title}</Heading>
+        <Heading className="display mt-4 text-[clamp(1.45rem,5vw,4.6rem)]">{title}</Heading>
       </Reveal>
       {lede && (
         <Reveal delay={120}>

@@ -69,7 +69,7 @@ function TeamCard({ team, onOpen }: { team: Team; onOpen: () => void }) {
       <motion.h3
         layoutId={`name-${team.constructorId}`}
         transition={SPRING}
-        className="display text-[clamp(1.5rem,3.2vw,2.25rem)]"
+        className="display text-[clamp(1.25rem,2.4vw,1.75rem)]"
       >
         {team.name}
       </motion.h3>
@@ -133,7 +133,7 @@ function TeamDetail({ team, onClose }: { team: Team; onClose: () => void }) {
         <motion.h3
           layoutId={`name-${team.constructorId}`}
           transition={SPRING}
-          className="display mt-3 text-[clamp(2rem,6vw,3.5rem)]"
+          className="display mt-3 text-[clamp(1.5rem,4.2vw,2.7rem)]"
         >
           {team.name}
         </motion.h3>

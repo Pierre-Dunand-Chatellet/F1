@@ -1,41 +1,72 @@
 @import 'tailwindcss';
 
-/* Auto-hebergees : aucune requete vers un service tiers pour l'affichage.
-   Les seules ressources externes du site sont les trois APIs de donnees. */
+/* F1 — même famille que le portfolio : neutres chauds de la version « nuit », titres en Syne, texte en Geist, étiquettes en JetBrains Mono.
+   Le rouge de la Formule 1 reste l'accent de ce site. Polices auto-hébergées : aucune requête vers un service tiers
+   pour l'affichage. Les seules ressources externes du site sont les trois APIs de données. */
 @font-face {
-  font-family: 'Archivo';
-  src: url('/f1/fonts/archivo.woff2') format('woff2-variations');
-  font-weight: 400 900;
-  font-stretch: 62% 125%;
+  font-family: 'Syne';
+  src: url('/f1/fonts/Syne-normal-400-800-latin-ext.woff2') format('woff2');
+  font-weight: 400 800;
   font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'Space Grotesk';
-  src: url('/f1/fonts/space-grotesk.woff2') format('woff2-variations');
-  font-weight: 300 700;
+  font-family: 'Syne';
+  src: url('/f1/fonts/Syne-normal-400-800-latin.woff2') format('woff2');
+  font-weight: 400 800;
   font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/f1/fonts/Geist-normal-400-latin-ext.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/f1/fonts/Geist-normal-400-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/f1/fonts/JetBrainsMono-normal-400-latin-ext.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/f1/fonts/JetBrainsMono-normal-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @theme {
-  --color-void: #0b0c10;
-  --color-ink: #f4f4f6;
+  --color-void: #100e0c;
+  --color-ink: #ece5d8;
   --color-accent: #ff1801;
 
-  --color-carbon-900: #101218;
-  --color-carbon-800: #171922;
-  --color-carbon-700: #22252f;
-  --color-carbon-500: #454a58;
-  --color-carbon-300: #8a90a0;
+  --color-carbon-900: #1a1714;
+  --color-carbon-800: #211d19;
+  --color-carbon-700: #2c2722;
+  --color-carbon-500: #857d6f;
+  --color-carbon-300: #a69d8e;
 
-  --font-display: 'Archivo', system-ui, sans-serif;
-  --font-tech: 'Space Grotesk', ui-monospace, monospace;
+  --font-display: 'Syne', 'Helvetica Neue', Arial, sans-serif;
+  --font-tech: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  --font-text: 'Geist', system-ui, sans-serif;
 }
 
 :root {
   /* Les easings natifs manquent de nerf : ces courbes donnent le claquement. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --grid-line: rgb(244 244 246 / 0.06);
+  --grid-line: rgb(236 229 216 / 0.08);
   --gutter: clamp(1.25rem, 4vw, 5rem);
 
   color-scheme: dark;
@@ -51,8 +82,8 @@ body {
   margin: 0;
   background: var(--color-void);
   color: var(--color-ink);
-  font-family: var(--font-tech);
-  font-weight: 350;
+  font-family: var(--font-text);
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -66,18 +97,25 @@ body {
 .display {
   font-family: var(--font-display);
   font-weight: 800;
-  font-stretch: 112%;
-  letter-spacing: -0.04em;
-  line-height: 0.92;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
   text-transform: uppercase;
+}
+
+/* Les gros chiffres (compte a rebours, points, annees) ne sont pas en Syne : son « 1 » ressemble a un « I ». */
+.display.tabular {
+  font-family: var(--font-text);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 /* Surimpression technique : labels, unites, telemetrie en filigrane. */
 .tech {
   font-family: var(--font-tech);
   font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.18em;
+  font-weight: 400;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -175,4 +213,11 @@ body {
    visible sous elle (le bandeau de donnees hors ligne) a besoin de la connaitre. */
 :root {
   --nav-h: 3.25rem;
+}
+
+/* Mobile : le monogramme et la marque prennent de la place dans la barre, on resserre les lettres des liens. */
+@media (max-width: 639px) {
+  nav .tech {
+    letter-spacing: 0.1em;
+  }
 }

@@ -100,7 +100,7 @@ export function NextRace({ race }: { race: Race }) {
       >
         <div>
           <p className="tech text-accent">Prochain Grand Prix · Manche {race.round}</p>
-          <h3 className="display mt-4 text-[clamp(2rem,5.5vw,4rem)]">{label.name}</h3>
+          <h3 className="display mt-4 text-[clamp(1.5rem,4vw,3.2rem)]">{label.name}</h3>
           <p className="mt-3 text-carbon-300">
             {race.Circuit.circuitName} — {label.locality}, {label.country}
           </p>
@@ -168,7 +168,7 @@ function RaceRow({
         aria-expanded={open}
         className={`pressable flex w-full items-center gap-5 py-5 pl-7 text-left transition-opacity duration-200 ${
           // Un GP passe est estompe — sauf quand on vient de l'ouvrir pour le lire.
-          past && !next && !open ? 'opacity-40' : ''
+          past && !next && !open ? 'opacity-60' : ''
         }`}
       >
         <span className="tabular tech w-8 shrink-0 text-carbon-500">{race.round}</span>

@@ -17,7 +17,7 @@ export function Hero({ races }: { races: Race[] }) {
           </span>
         </p>
 
-        <h1 className="display mt-6 text-[clamp(3.5rem,15vw,13rem)]">
+        <h1 className="display mt-6 text-[clamp(1.9rem,10vw,11.5rem)]">
           <span className="line-mask">
             <span style={{ '--line-delay': '160ms' } as React.CSSProperties}>Formule</span>
           </span>

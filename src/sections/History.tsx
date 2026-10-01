@@ -107,7 +107,7 @@ function HistoryScroller() {
         <header className="shrink-0 px-[var(--gutter)]">
           <p className="tech text-accent">03 — Archives</p>
           <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-2">
-            <h1 className="display text-[clamp(2rem,5vw,3.5rem)]">Soixante-quinze ans</h1>
+            <h1 className="display text-[clamp(1.5rem,3.6vw,2.6rem)]">Soixante-quinze ans</h1>
             <p className="text-sm text-carbon-300">
               Chaque époque tient dans une rupture technique et un duel.
             </p>
@@ -161,7 +161,7 @@ function EraPanel({ era, stacked }: { era: Era; stacked?: boolean }) {
     >
       <div>
         <p className="tabular tech text-accent">{era.years}</p>
-        <h3 className="display mt-3 text-[clamp(1.6rem,3.4vw,2.4rem)]">{era.title}</h3>
+        <h3 className="display mt-3 text-[clamp(1.3rem,2.6vw,1.9rem)]">{era.title}</h3>
 
         <dl className="mt-4 space-y-2 border-y border-[var(--grid-line)] py-3">
           <div>

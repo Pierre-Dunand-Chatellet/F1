@@ -45,17 +45,33 @@ export function Nav() {
       className="fixed inset-x-0 top-0 z-40 border-b border-[var(--grid-line)] bg-void/80 backdrop-blur-md"
     >
       <div className="flex h-[var(--nav-h)] items-center justify-between px-[var(--gutter)]">
-        {/* after: zone de clic invisible (≥ 44 px de haut, WCAG 2.5.8) sans changer la mise en page. */}
-        <a
-          href={href('')}
-          className="tech pressable relative text-ink after:absolute after:-inset-x-3 after:-inset-y-3.5"
-          aria-label="Accueil"
-        >
-          F1<span className="text-accent">.</span>
-        </a>
+        <div className="flex items-center gap-4">
+          {/* Le monogramme ramène au portfolio. after : zone de clic invisible (≥ 44 px) sans changer la mise en page. */}
+          <a
+            href="https://dunandchatellet.fr/"
+            aria-label="Pierre D—C., retour au portfolio"
+            className="pressable relative block leading-none after:absolute after:-inset-2"
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}marque.svg`}
+              width={26}
+              height={26}
+              alt=""
+              className="rounded-[6px]"
+            />
+          </a>
+          <span aria-hidden className="h-4 w-px bg-[var(--grid-line)]" />
+          <a
+            href={href('')}
+            className="tech pressable relative text-ink after:absolute after:-inset-x-3 after:-inset-y-3.5"
+            aria-label="Accueil"
+          >
+            F1<span className="text-accent">.</span>
+          </a>
+        </div>
 
         <div className="relative">
-          <ul ref={list} className="flex gap-6">
+          <ul ref={list} className="flex gap-4 sm:gap-6">
             {ROUTES.map((route, i) => (
               <li key={route.path}>
                 <a
@@ -75,7 +91,7 @@ export function Nav() {
           {/* Copie active, decoupee sur l'entree courante. */}
           <ul
             aria-hidden
-            className="pointer-events-none absolute inset-0 flex gap-6 text-accent"
+            className="pointer-events-none absolute inset-0 flex gap-4 text-accent sm:gap-6"
             style={{ clipPath: clip, transition: 'clip-path 0.3s var(--ease-in-out)' }}
           >
             {ROUTES.map((route) => (
