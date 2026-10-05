@@ -46,21 +46,6 @@ export function Nav() {
     >
       <div className="flex h-[var(--nav-h)] items-center justify-between px-[var(--gutter)]">
         <div className="flex items-center gap-4">
-          {/* Le monogramme ramène au portfolio. after : zone de clic invisible (≥ 44 px) sans changer la mise en page. */}
-          <a
-            href="https://dunandchatellet.fr/"
-            aria-label="Pierre D—C., retour au portfolio"
-            className="pressable relative block leading-none after:absolute after:-inset-2"
-          >
-            <img
-              src={`${import.meta.env.BASE_URL}marque.svg`}
-              width={26}
-              height={26}
-              alt=""
-              className="rounded-[6px]"
-            />
-          </a>
-          <span aria-hidden className="h-4 w-px bg-[var(--grid-line)]" />
           <a
             href={href('')}
             className="tech pressable relative text-ink after:absolute after:-inset-x-3 after:-inset-y-3.5"
