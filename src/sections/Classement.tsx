@@ -59,7 +59,7 @@ function DriverRow({ row }: { row: Row }) {
   const leader = row.position === 1
 
   return (
-    <li className="flex items-center gap-4 bg-void py-3.5">
+    <li className="flex items-center gap-4 bg-void py-3.5 pr-4 sm:pr-6">
       <span
         className={`tabular tech w-7 shrink-0 text-right ${leader ? 'text-accent' : 'text-carbon-300'}`}
       >

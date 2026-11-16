@@ -42,7 +42,7 @@ export function Nav() {
   return (
     <nav
       aria-label="Navigation principale"
-      className="fixed inset-x-0 top-0 z-40 border-b border-[var(--grid-line)] bg-void/80 backdrop-blur-md"
+      className="fixed inset-x-0 top-0 z-40 border-b border-[var(--grid-line)] bg-beton"
     >
       <div className="flex h-[var(--nav-h)] items-center justify-between px-[var(--gutter)]">
         <div className="flex items-center gap-4">
@@ -51,7 +51,7 @@ export function Nav() {
             className="tech pressable relative text-ink after:absolute after:-inset-x-3 after:-inset-y-3.5"
             aria-label="Accueil"
           >
-            F1<span className="text-accent">.</span>
+            F1, saison 2026
           </a>
         </div>
 

@@ -7,7 +7,7 @@ import { ROUTES, href } from '../lib/routes.ts'
 /**
  * Habillage commun aux quatre pages : barre de navigation, bandeau d'alerte,
  * pied de page. Chaque page est un document independant, donc cet habillage
- * est monte a chaque chargement — il doit rester leger.
+ * est monte a chaque chargement, il doit rester leger.
  */
 export function Page({
   children,
@@ -54,9 +54,9 @@ function StaleBanner() {
     // derriere la nav et restait invisible pour qui arrive par une ancre.
     <p
       role="status"
-      className="tech sticky top-[var(--nav-h)] z-30 mt-[var(--nav-h)] border-y border-accent/40 bg-[#1d0a06] px-[var(--gutter)] py-2.5 text-center text-accent"
+      className="tech sticky top-[var(--nav-h)] z-30 mt-[var(--nav-h)] border-y border-accent/40 bg-[#fde8e6] px-[var(--gutter)] py-2.5 text-center text-accent"
     >
-      Données temps réel indisponibles — affichage de la dernière sauvegarde
+      Données temps réel indisponibles, affichage de la dernière sauvegarde
     </p>
   )
 }
@@ -69,7 +69,7 @@ function Credits({ stale }: { stale: boolean }) {
           {ROUTES.map((route) => (
             <li key={route.path}>
               <a href={href(route.path)} className="pressable text-ink hover-rise inline-block">
-                <span className="tech mr-2 text-carbon-500">{route.index}</span>
+                <span aria-hidden className={`zone zone-${Number(route.index)} mr-2 !h-6 !w-6 !text-base align-middle`}>{Number(route.index)}</span>
                 {route.label}
               </a>
             </li>

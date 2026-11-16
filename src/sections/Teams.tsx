@@ -25,7 +25,7 @@ export function Teams({ teams }: { teams: Team[] }) {
     <section id="ecuries" className="relative px-[var(--gutter)] py-[12vh]">
       <SectionHeader
         as="h1"
-        index="01 — Grille"
+        index="01, Grille"
         title="Écuries"
         lede="Onze constructeurs au championnat. Classement, palmarès et pilotes engagés, mis à jour à chaque Grand Prix."
       />
@@ -52,17 +52,19 @@ function TeamCard({ team, onOpen }: { team: Team; onOpen: () => void }) {
       transition={SPRING}
       onClick={onOpen}
       aria-label={`Fiche de l'écurie ${team.name}`}
-      className="pressable hover-rise group relative flex h-full w-full flex-col items-start gap-6 bg-void p-6 text-left"
+      className="pressable group relative flex h-full w-full flex-col items-start gap-6 bg-void p-6 text-left"
     >
-      <motion.span
-        layoutId={`livery-${team.constructorId}`}
-        transition={SPRING}
-        style={{ background: team.colour }}
-        className="absolute inset-y-0 left-0 w-[3px]"
-      />
-
-      <div className="flex w-full items-baseline justify-between">
-        <span className="tabular tech text-carbon-300">P{team.position}</span>
+      <div className="flex w-full items-center justify-between">
+        <span className="flex items-center gap-2.5">
+          {/* La couleur de l'écurie en pastille, comme un code d'accès sur le pass. */}
+          <motion.span
+            layoutId={`livery-${team.constructorId}`}
+            transition={SPRING}
+            style={{ background: team.colour }}
+            className="h-4 w-4 rounded-[3px]"
+          />
+          <span className="tabular tech text-carbon-300">P{team.position}</span>
+        </span>
         <span className="tabular tech text-carbon-300">{team.points} pts</span>
       </div>
 
@@ -102,7 +104,7 @@ function TeamDetail({ team, onClose }: { team: Team; onClose: () => void }) {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
         onClick={onClose}
-        className="absolute inset-0 bg-void/85 backdrop-blur-sm"
+        className="absolute inset-0 bg-ink/50"
       />
 
       <motion.div
@@ -112,13 +114,13 @@ function TeamDetail({ team, onClose }: { team: Team; onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-label={team.name}
-        className="relative w-full max-w-2xl overflow-hidden border border-carbon-700 bg-carbon-900 p-8"
+        className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-void p-8 pt-16"
       >
         <motion.span
           layoutId={`livery-${team.constructorId}`}
           transition={SPRING}
           style={{ background: team.colour }}
-          className="absolute inset-y-0 left-0 w-[3px]"
+          className="absolute left-8 top-8 h-5 w-5 rounded-[3px]"
         />
 
         <button
@@ -159,8 +161,8 @@ function TeamDetail({ team, onClose }: { team: Team; onClose: () => void }) {
                   {d.lastName}
                 </span>
                 <span className="tech text-carbon-500">
-                  {d.code} · {nationality(d.nationality)}
-                  {d.otherTeams.length > 0 && ` · aussi ${d.otherTeams.join(', ')}`}
+                  {d.code}, {nationality(d.nationality)}
+                  {d.otherTeams.length > 0 && `, aussi ${d.otherTeams.join(', ')}`}
                 </span>
               </span>
               <span className="text-right">

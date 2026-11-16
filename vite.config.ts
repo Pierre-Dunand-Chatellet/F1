@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite'
 //
 // Construction multi-pages : chaque partie est un vrai document HTML, servi tel
 // quel. Un routeur cote client aurait exige une reecriture serveur pour que les
-// liens profonds ne renvoient pas une 404 — impossible sur cet hebergement.
+// liens profonds ne renvoient pas une 404, impossible sur cet hebergement.
 export default defineConfig({
   base: '/f1/',
   plugins: [react(), tailwindcss()],

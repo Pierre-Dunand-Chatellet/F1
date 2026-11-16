@@ -45,7 +45,7 @@ export function SectionHeader({
   return (
     <header className="border-t border-[var(--grid-line)] pt-6">
       <Reveal>
-        <p className="tech text-accent">{index}</p>
+        <ZoneLabel index={index} />
       </Reveal>
       <Reveal delay={60}>
         <Heading className="display mt-4 text-[clamp(1.45rem,5vw,4.6rem)]">{title}</Heading>
@@ -56,6 +56,19 @@ export function SectionHeader({
         </Reveal>
       )}
     </header>
+  )
+}
+
+/** Étiquette de section. « 01, Grille » devient la zone 1 du pass suivie de « Grille » ;
+ *  sans numéro, juste le mot. */
+export function ZoneLabel({ index }: { index: string }) {
+  const m = /^0?(\d),\s*(.*)$/.exec(index)
+  if (!m) return <p className="tech text-accent">{index}</p>
+  return (
+    <p className="tech flex items-center gap-3 text-ink">
+      <span aria-hidden className={`zone zone-${m[1]}`}>{m[1]}</span>
+      {m[2]}
+    </p>
   )
 }
 
@@ -113,15 +126,3 @@ export function Magnetic({ children, className }: { children: ReactNode; classNa
   )
 }
 
-/** Filets verticaux de fond : la grille technique, discrete. */
-export function GridLines() {
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="mx-auto flex h-full max-w-[1600px] justify-between px-[var(--gutter)]">
-        {Array.from({ length: 5 }, (_, i) => (
-          <span key={i} className="w-px bg-[var(--grid-line)]" />
-        ))}
-      </div>
-    </div>
-  )
-}

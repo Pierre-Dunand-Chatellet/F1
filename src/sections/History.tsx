@@ -1,6 +1,6 @@
 import { motion, useMotionTemplate, useScroll, useSpring, useTransform } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import { Reveal, SectionHeader } from '../components/ui.tsx'
+import { Reveal, SectionHeader, ZoneLabel } from '../components/ui.tsx'
 import { ARCHIVE } from '../data/archive.ts'
 import { ERAS, type Era } from '../data/eras.ts'
 import { useReducedMotion } from '../lib/hooks.ts'
@@ -56,7 +56,7 @@ function ArchiveStrip() {
                   rel="noreferrer noopener"
                   className="tech mt-1 inline-block text-carbon-500 transition-colors duration-150 hover:text-accent"
                 >
-                  {photo.credit} · {photo.licence}
+                  {photo.credit}, {photo.licence}
                 </a>
               </figcaption>
             </figure>
@@ -105,7 +105,7 @@ function HistoryScroller() {
         {/* En-tete compact : dans un conteneur colle a la hauteur de l'ecran,
             chaque pixel pris ici est un pixel retire aux panneaux. */}
         <header className="shrink-0 px-[var(--gutter)]">
-          <p className="tech text-accent">03 — Archives</p>
+          <ZoneLabel index="03, Archives" />
           <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-2">
             <h1 className="display text-[clamp(1.5rem,3.6vw,2.6rem)]">Soixante-quinze ans</h1>
             <p className="text-sm text-carbon-300">
@@ -139,7 +139,7 @@ function HistoryStacked() {
     <section id="histoire" className="px-[var(--gutter)] py-[12vh]">
       <SectionHeader
         as="h1"
-        index="03 — Archives"
+        index="03, Archives"
         title="Soixante-quinze ans"
         lede="Chaque époque de la Formule 1 tient dans une rupture technique et un duel."
       />

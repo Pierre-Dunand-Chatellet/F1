@@ -1,5 +1,5 @@
 // Logique de saison : horaires de week-end, prochaine seance, agregation des ecuries.
-// Fonctions pures, sans acces reseau — testees par src/lib/lib.check.ts.
+// Fonctions pures, sans acces reseau, testees par src/lib/lib.check.ts.
 
 import type {
   ConstructorStanding,

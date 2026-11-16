@@ -1,4 +1,3 @@
-import { ArrowUpRight } from 'lucide-react'
 import { useMemo } from 'react'
 import { Reveal } from '../components/ui.tsx'
 import { ERAS } from '../data/eras.ts'
@@ -21,7 +20,7 @@ export function Sommaire({ races, teams }: { races: Race[]; teams: Team[] }) {
       // « classés » et non « engagés » : un pilote ayant change d'ecurie en cours
       // de saison apparait dans le classement, la ou les baquets n'ont pas bouge.
       'ecuries/': teams.length
-        ? `${teams.length} écuries · ${drivers} pilotes classés`
+        ? `${teams.length} écuries, ${drivers} pilotes classés`
         : 'La grille',
       'calendrier/': upcoming
         ? `Prochain : ${localise(upcoming).name}`
@@ -37,21 +36,15 @@ export function Sommaire({ races, teams }: { races: Race[]; teams: Team[] }) {
           <Reveal as="li" key={route.path} delay={i * 70}>
             <a
               href={href(route.path)}
-              className="pressable group flex items-center gap-6 border-b border-[var(--grid-line)] py-8"
+              className="pressable group flex items-center gap-6 border-b border-[var(--grid-line)] py-8 hover:bg-void"
             >
-              <span className="tabular tech w-10 shrink-0 text-carbon-500">{route.index}</span>
+              <span aria-hidden className={`zone zone-${Number(route.index)}`}>{Number(route.index)}</span>
 
               <span className="min-w-0 flex-1">
                 <span className="display block text-[clamp(1.2rem,4.2vw,2.7rem)]">{route.label}</span>
                 <span className="mt-1 block text-sm text-carbon-300">{teasers[route.path]}</span>
               </span>
 
-              <ArrowUpRight
-                size={26}
-                strokeWidth={1.25}
-                aria-hidden
-                className="shrink-0 text-carbon-500 transition-all duration-200 ease-out group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-accent"
-              />
             </a>
           </Reveal>
         ))}

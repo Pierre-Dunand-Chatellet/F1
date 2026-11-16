@@ -35,7 +35,7 @@ export function TrackMap({
   }
 
   return (
-    <svg viewBox="0 0 1000 1000" className={className} role="img" aria-label={`Tracé — ${trace.name}`}>
+    <svg viewBox="0 0 1000 1000" className={className} role="img" aria-label={`Tracé, ${trace.name}`}>
       {/* Trace fantome : le circuit reste lisible avant que le dessin ne passe. */}
       <path d={trace.path} fill="none" stroke="var(--grid-line)" strokeWidth={14} strokeLinejoin="round" />
 

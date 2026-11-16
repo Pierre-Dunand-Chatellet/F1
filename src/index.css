@@ -1,86 +1,59 @@
 @import 'tailwindcss';
 
-/* F1 — même famille que le portfolio : neutres chauds de la version « nuit », titres en Syne, texte en Geist, étiquettes en JetBrains Mono.
-   Le rouge de la Formule 1 reste l'accent de ce site. Polices auto-hébergées : aucune requête vers un service tiers
-   pour l'affichage. Les seules ressources externes du site sont les trois APIs de données. */
-@font-face {
-  font-family: 'Syne';
-  src: url('/f1/fonts/Syne-normal-400-800-latin-ext.woff2') format('woff2');
-  font-weight: 400 800;
-  font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Syne';
-  src: url('/f1/fonts/Syne-normal-400-800-latin.woff2') format('woff2');
-  font-weight: 400 800;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Geist';
-  src: url('/f1/fonts/Geist-normal-400-latin-ext.woff2') format('woff2');
-  font-weight: 400 700;
-  font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Geist';
-  src: url('/f1/fonts/Geist-normal-400-latin.woff2') format('woff2');
-  font-weight: 400 700;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/f1/fonts/JetBrainsMono-normal-400-latin-ext.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/f1/fonts/JetBrainsMono-normal-400-latin.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+/* F1, identité « pass paddock » (2026-11-14) : le prochain Grand Prix sur un badge
+   d'accréditation, les rubriques comme des zones d'accès numérotées (1 écuries,
+   2 calendrier, 3 histoire). Titres en Barlow Condensed, texte en Schibsted Grotesk
+   (la police du portfolio). Polices auto-hébergées : aucune requête vers un service
+   tiers pour l'affichage ; les seules ressources externes sont les APIs de données. */
+@font-face { font-family: 'Barlow Condensed'; src: url('/f1/fonts/BarlowCondensed-600-latin.woff2') format('woff2'); font-weight: 600; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Barlow Condensed'; src: url('/f1/fonts/BarlowCondensed-600-latin-ext.woff2') format('woff2'); font-weight: 600; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Barlow Condensed'; src: url('/f1/fonts/BarlowCondensed-800-latin.woff2') format('woff2'); font-weight: 800; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Barlow Condensed'; src: url('/f1/fonts/BarlowCondensed-800-latin-ext.woff2') format('woff2'); font-weight: 800; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Schibsted Grotesk'; src: url('/f1/fonts/SchibstedGrotesk-latin.woff2') format('woff2'); font-weight: 400 900; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Schibsted Grotesk'; src: url('/f1/fonts/SchibstedGrotesk-latin-ext.woff2') format('woff2'); font-weight: 400 900; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
 @theme {
-  --color-void: #100e0c;
-  --color-ink: #ece5d8;
-  --color-accent: #ff1801;
+  /* « void » = les surfaces (le badge, les cartes) ; le béton du paddock est le fond de page. */
+  --color-void: #ffffff;
+  --color-ink: #15171a;
+  --color-accent: #c00a00;        /* rouge F1 assombri : 4,8:1 sur le béton, pour du texte */
+  --color-cordon: #e10600;        /* rouge vif, seulement en aplat (cordon, bande du badge) */
+  --color-beton: #dfe2e4;
 
-  --color-carbon-900: #1a1714;
-  --color-carbon-800: #211d19;
-  --color-carbon-700: #2c2722;
-  --color-carbon-500: #857d6f;
-  --color-carbon-300: #a69d8e;
+  --color-carbon-900: #f1f2f3;
+  --color-carbon-800: #e8eaec;
+  --color-carbon-700: #b9bec3;
+  --color-carbon-500: #5d636a;    /* texte discret : 4,9:1 sur le béton */
+  --color-carbon-300: #3b4046;
 
-  --font-display: 'Syne', 'Helvetica Neue', Arial, sans-serif;
-  --font-tech: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
-  --font-text: 'Geist', system-ui, sans-serif;
+  --color-zone-1: #0057b8;        /* écuries */
+  --color-zone-2: #00843d;        /* calendrier */
+  --color-zone-3: #ffd100;        /* histoire (chiffre en encre) */
+
+  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-tech: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-text: 'Schibsted Grotesk', system-ui, sans-serif;
 }
 
 :root {
   /* Les easings natifs manquent de nerf : ces courbes donnent le claquement. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --grid-line: rgb(236 229 216 / 0.08);
+  --grid-line: rgb(21 23 26 / 0.14);
   --gutter: clamp(1.25rem, 4vw, 5rem);
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
-  background: var(--color-void);
+  background: var(--color-beton);
   /* Lenis pilote le defilement ; sans cette ligne les deux se battent. */
   scrollbar-gutter: stable;
 }
 
 body {
   margin: 0;
-  background: var(--color-void);
+  background: var(--color-beton);
   color: var(--color-ink);
   font-family: var(--font-text);
   font-weight: 400;
@@ -97,42 +70,27 @@ body {
 .display {
   font-family: var(--font-display);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 0.95;
+  letter-spacing: 0;
+  line-height: 0.92;
   text-transform: uppercase;
 }
 
-/* Les gros chiffres (compte a rebours, points, annees) ne sont pas en Syne : son « 1 » ressemble a un « I ». */
+/* Les gros chiffres restent en Barlow Condensed : son « 1 » a un drapeau, il se lit. */
 .display.tabular {
-  font-family: var(--font-text);
-  font-weight: 700;
-  letter-spacing: -0.04em;
   line-height: 1;
 }
 
-/* Surimpression technique : labels, unites, telemetrie en filigrane. */
+/* Inscriptions du badge : capitales condensées, sans espacement forcé. */
 .tech {
   font-family: var(--font-tech);
-  font-size: 0.6875rem;
-  font-weight: 400;
-  letter-spacing: 0.16em;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
 }
 
-/* Reveal au scroll : l'IntersectionObserver pose data-in, la transition CSS
-   fait le reste. Hors main thread, donc insensible aux fetch en cours. */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 0.5s var(--ease-out),
-    transform 0.5s var(--ease-out);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-[data-reveal='in'] {
-  opacity: 1;
-  transform: none;
-}
+/* Plus d'apparition au défilement : le contenu est là tout de suite.
+   (Le composant Reveal reste en place, il ne fait plus rien de visible.) */
 
 /* Tout element pressable repond a l'appui. */
 .pressable {
@@ -156,10 +114,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   /* Mouvement reduit, pas anime a zero : on garde l'opacite qui aide
      a comprendre l'apparition, on supprime tout deplacement. */
-  [data-reveal] {
-    transform: none;
-    transition: opacity 0.2s ease;
-  }
   .pressable:active {
     transform: none;
   }
@@ -173,7 +127,7 @@ body {
 }
 
 /* Masquage typographique : chaque ligne monte depuis sous son propre masque.
-   Animation de montage, jouee une fois — des keyframes CSS suffisent et
+   Animation de montage, jouee une fois, des keyframes CSS suffisent et
    tournent hors main thread. */
 .line-mask {
   display: block;
@@ -216,8 +170,36 @@ body {
 }
 
 /* Mobile : le monogramme et la marque prennent de la place dans la barre, on resserre les lettres des liens. */
-@media (max-width: 639px) {
-  nav .tech {
-    letter-spacing: 0.1em;
-  }
+
+
+/* Badge de zone : un carré de couleur et son numéro, comme sur un pass d'accréditation. */
+.zone {
+  display: inline-grid; place-items: center; flex: none;
+  width: 2.25rem; height: 2.25rem; border-radius: 4px;
+  font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; line-height: 1; color: #fff;
+}
+.zone-1 { background: var(--color-zone-1); }
+.zone-2 { background: var(--color-zone-2); }
+.zone-3 { background: var(--color-zone-3); color: var(--color-ink); }
+
+/* Le badge du prochain Grand Prix : carte blanche plastifiée, fente du cordon en haut. */
+.pass {
+  position: relative; background: #fff; border-radius: 1.25rem; overflow: hidden;
+  box-shadow: 0 1px 0 rgb(21 23 26 / 0.08), 0 30px 60px -30px rgb(21 23 26 / 0.45);
+}
+.pass::before {
+  content: ""; position: absolute; left: 50%; top: 0.9rem; width: 5rem; height: 0.9rem; margin-left: -2.5rem;
+  border-radius: 999px; background: var(--color-beton);
+}
+.pass-bande {
+  margin-top: 2.75rem; background: var(--color-cordon); color: #fff;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.75rem 1.5rem;
+}
+.cordon {
+  position: absolute; left: 50%; bottom: 100%; width: 3.5rem; height: 2.5rem; margin-left: -1.75rem;
+  background: var(--color-cordon);
+}
+@media (min-width: 64rem) {
+  /* Sur grand écran, le badge est seul dans sa colonne : le cordon monte jusqu'en haut. */
+  .cordon { height: 40vh; }
 }

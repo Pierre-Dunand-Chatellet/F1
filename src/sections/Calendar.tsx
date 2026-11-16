@@ -55,7 +55,7 @@ export function Calendar({ races }: { races: Race[] }) {
     <section id="calendrier" className="relative px-[var(--gutter)] py-[12vh]">
       <SectionHeader
         as="h1"
-        index="02 — Saison"
+        index="02, Saison"
         title="Calendrier"
         lede="Vingt-trois Grands Prix, six week-ends sprint. Les horaires sont convertis dans votre fuseau."
       />
@@ -95,30 +95,37 @@ export function NextRace({ race }: { race: Race }) {
 
   return (
     <Reveal>
-      <div
-        className="mt-14 grid items-center gap-10 border-y border-[var(--grid-line)] py-10 md:grid-cols-[1fr_minmax(0,22rem)]"
-      >
-        <div>
-          <p className="tech text-accent">Prochain Grand Prix · Manche {race.round}</p>
-          <h3 className="display mt-4 text-[clamp(1.5rem,4vw,3.2rem)]">{label.name}</h3>
-          <p className="mt-3 text-carbon-300">
-            {race.Circuit.circuitName} — {label.locality}, {label.country}
-          </p>
-
-          {left && (
-            <div className="tabular display mt-8 flex gap-6 text-[clamp(1.6rem,4vw,2.6rem)]">
-              <Unit value={left.d} label="jours" />
-              <Unit value={left.h} label="heures" />
-              <Unit value={left.m} label="min" />
-              <Unit value={left.s} label="sec" accent />
+      {/* Le badge d'accréditation : cordon rouge, bande « Prochain Grand Prix »,
+          puis le nom, le compte à rebours et le tracé dans son cadre. */}
+      <div className="relative mx-auto mt-14 w-full max-w-[36rem] lg:mt-0">
+        <span aria-hidden className="cordon" />
+        <article className="pass">
+          <div className="pass-bande">
+            <p className="tech text-[1.1rem]">Prochain Grand Prix</p>
+            <p className="tech">Manche {race.round}</p>
+          </div>
+          <div className="grid gap-6 p-6 sm:grid-cols-[minmax(0,1fr)_11rem]">
+            <div>
+              <h3 className="display text-[clamp(2rem,4vw,3.2rem)]">{label.name}</h3>
+              <p className="mt-3 text-carbon-300">
+                {race.Circuit.circuitName}, {label.locality}, {label.country}
+              </p>
+              {left && (
+                <div className="tabular display mt-6 flex gap-5 text-[clamp(2rem,4vw,3rem)]">
+                  <Unit value={left.d} label="jours" />
+                  <Unit value={left.h} label="heures" />
+                  <Unit value={left.m} label="min" />
+                  <Unit value={left.s} label="sec" accent />
+                </div>
+              )}
             </div>
-          )}
-        </div>
-
-        <TrackMap
-          circuitId={race.Circuit.circuitId}
-          className="aspect-square w-full"
-        />
+            <TrackMap
+              circuitId={race.Circuit.circuitId}
+              colour="var(--color-cordon)"
+              className="aspect-square w-full self-start rounded-xl border-2 border-ink p-3"
+            />
+          </div>
+        </article>
       </div>
     </Reveal>
   )
@@ -167,7 +174,7 @@ function RaceRow({
         }}
         aria-expanded={open}
         className={`pressable flex w-full items-center gap-5 py-5 pl-7 text-left transition-opacity duration-200 ${
-          // Un GP passe est estompe — sauf quand on vient de l'ouvrir pour le lire.
+          // Un GP passe est estompe, sauf quand on vient de l'ouvrir pour le lire.
           past && !next && !open ? 'opacity-60' : ''
         }`}
       >
@@ -176,7 +183,7 @@ function RaceRow({
         <span className="min-w-0 flex-1">
           <span className="block truncate text-[1.05rem]">{label.name}</span>
           <span className="tech text-carbon-500">
-            {label.locality} · {label.country}
+            {label.locality}, {label.country}
           </span>
         </span>
 
@@ -233,7 +240,7 @@ function Weekend({ sessions }: { sessions: WeekendSession[] }) {
           <li key={s.label} className="flex items-baseline justify-between gap-4 bg-void py-3">
             <span className={s.kind === 'race' ? 'text-ink' : 'text-carbon-300'}>{s.label}</span>
             <span className="tabular text-sm text-carbon-300">
-              {s.start ? `${dateFmt.format(s.start)} · ${timeFmt.format(s.start)}` : 'horaire à venir'}
+              {s.start ? `${dateFmt.format(s.start)}, ${timeFmt.format(s.start)}` : 'horaire à venir'}
             </span>
           </li>
         ))}

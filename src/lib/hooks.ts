@@ -21,7 +21,7 @@ export function useReducedMotion(): boolean {
  * Defilement lisse. Lenis interpole le scroll dans une boucle rAF sur le main
  * thread : c'est un compromis assume, il rend la page plus douce au detriment
  * d'un peu de reactivite au trackpad. Desactive quand l'utilisateur demande
- * moins de mouvement — la, le scroll natif est le bon choix.
+ * moins de mouvement, la, le scroll natif est le bon choix.
  */
 export function useSmoothScroll(enabled: boolean): void {
   useEffect(() => {

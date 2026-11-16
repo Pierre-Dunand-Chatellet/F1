@@ -1,7 +1,7 @@
 // Photos d'archive de la section Histoire.
 //
 // Liste tenue a la main, et c'est deliberé : `npm run fetch-images` interroge
-// Wikimedia Commons par mots-cles et se trompe souvent — sur sept resultats, il
+// Wikimedia Commons par mots-cles et se trompe souvent, sur sept resultats, il
 // avait rapporte une remise de trophees sans rapport, une Porsche de 1962 pour
 // l'ere electronique, une course de Formule 3 etiquetee turbo, et un logo
 // d'ecurie sous marque deposee. Seules les images verifiees a l'oeil, dont le
@@ -31,7 +31,7 @@ export const ARCHIVE: ArchivePhoto[] = [
   {
     src: 'img/moteur-arriere.jpg',
     alt: 'Jim Clark au volant de sa Lotus à moteur central arrière, en action sur le circuit de Zandvoort',
-    caption: 'Jim Clark en Lotus à Zandvoort — le moteur est passé derrière',
+    caption: 'Jim Clark en Lotus à Zandvoort, le moteur est passé derrière',
     credit: 'Eric Koch / Anefo',
     licence: 'CC0',
     source: 'https://commons.wikimedia.org/wiki/Category:Anefo',

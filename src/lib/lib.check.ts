@@ -12,7 +12,7 @@ import {
   splitDuration,
   teamColours,
 } from './season.ts'
-// @ts-expect-error — script de build en JS, pas de declarations de types.
+// @ts-expect-error, script de build en JS, pas de declarations de types.
 import { chainWays, simplify, toTrace } from '../../scripts/fetch-data.mjs'
 import { existsSync } from 'node:fs'
 import { ARCHIVE } from '../data/archive.ts'

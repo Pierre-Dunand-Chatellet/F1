@@ -1,5 +1,5 @@
 // Jolpica publie ses libelles en anglais. Le site est en francais : sans cette
-// table, "Azerbaijan Grand Prix — Baku, Azerbaijan" s'affiche au milieu d'une
+// table, "Azerbaijan Grand Prix, Baku, Azerbaijan" s'affiche au milieu d'une
 // interface francaise.
 //
 // Table par circuitId plutot que par nom de course : le nom peut changer d'une
